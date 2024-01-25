@@ -2,6 +2,8 @@
 
 public class MsSqlDbCopierTests
 {
+       
+    
     [Test]
     public void Copy_ShouldCopyAllDataFromAllDbTables()
     {

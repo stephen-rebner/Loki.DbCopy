@@ -1,18 +1,18 @@
 ﻿using CommunityToolkit.Diagnostics;
+using Loki.DbCopy.Commands.Interfaces;
 
 namespace Loki.DbCopy;
-
 
 
 public class MsSqlDbCopier : IDatabaseCopier
 {
     private readonly IDbCopyContext _dbCopyContext;
-    private readonly IEnumerable<IDatabaseCopyFunction> _databaseCopyFunctions;
-
-    public MsSqlDbCopier(IDbCopyContext dbCopyContext, IEnumerable<IDatabaseCopyFunction> databaseCopyFunctions)
+    private readonly IEnumerable<IDatabaseCopyCommand> _databaseCopyCommands;
+    
+    public MsSqlDbCopier(IDbCopyContext dbCopyContext, IEnumerable<IDatabaseCopyCommand> databaseCopyCommands)
     {
         _dbCopyContext = dbCopyContext;
-        _databaseCopyFunctions = databaseCopyFunctions;
+        _databaseCopyCommands = databaseCopyCommands;
     }
 
     public void Copy(string sourceConnectionString, string destinationConnectionString)
@@ -30,23 +30,11 @@ public class MsSqlDbCopier : IDatabaseCopier
         _dbCopyContext.DestinationConnectionString = destinationConnectionString;
         _dbCopyContext.DbCopyOptions = dbCopyOptions;
 
-        foreach (var databaseCopyFunction in _databaseCopyFunctions)
+        foreach (var databaseCopyFunction in _databaseCopyCommands)
         {
             databaseCopyFunction.Copy();
         }
-    }
-
-    public interface IDatabaseCopyFunction
-    {
-        void Copy();
-    }
-
-    public class DataCopyFunction : IDatabaseCopyFunction
-    {
-        public void Copy()
-        {
-            throw new NotImplementedException();
-        }
+        
     }
 
     public class DbCopyContext : IDbCopyContext
@@ -85,10 +73,6 @@ public class MsSqlDbCopier : IDatabaseCopier
         public bool CopyRoles { get; set; } = false;
         public bool CopyLogins { get; set; } = false;
         public bool CopyPermissions { get; set; } = false;
-        public bool CopyDatabaseSettings { get; set; } = false;
-        public bool CopyDatabaseOptions { get; set; } = false;
-        public bool CopyDatabaseFiles { get; set; } = false;
-        public bool CopyDatabaseFileGroups { get; set; } = false;
 
         public string[]? ExcludedTables { get; set; }
         public string[]? ExcludedViews { get; set; }
@@ -103,38 +87,4 @@ public class MsSqlDbCopier : IDatabaseCopier
     }
 }
 
-// public class DbCopyOptionsBuilder 
-// {
-//     static DbCopyOptionsBuilder()
-//     {
-//         var options = new DbCopyOptionsBuilder()
-//             .CopyData()
-//             .CopySchema()
-//             .CopyIndexes()
-//             .CopyForeignKeys()
-//             .CopyTriggers()
-//             .CopyStoredProcedures()
-//             .CopyViews()
-//             .CopyFunctions()
-//             .CopyUsers()
-//             .CopyRoles()
-//             .CopyLogins()
-//             .CopyPermissions()
-//             .CopyDatabaseSettings()
-//             .CopyDatabaseOptions()
-//             .CopyDatabaseFiles()
-//             .CopyDatabaseFileGroups()
-//             .ExcludeTables()
-//             .ExcludeViews()
-//             .ExcludeStoredProcedures()
-//             .ExcludeFunctions()
-//             .ExcludeUsers()
-//             .ExcludeRoles()
-//             .ExcludeLogins()
-//             .ExcludePermissions()
-//             .ExcludeDatabaseSettings()
-//             .ExcludeDatabaseOptions()
-//             .Build();
-//         
-//         
-// }
+
