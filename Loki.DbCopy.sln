@@ -1,8 +1,8 @@
-﻿
+
 Microsoft Visual Studio Solution File, Format Version 12.00
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Loki.MsSqlDbCopy", "Loki.MsSqlDbCopy\Loki.MsSqlDbCopy.csproj", "{59EF332B-6659-4849-AE49-4ED5304E09D6}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Loki.MsSqlDbCopy", "Loki.MsSqlDbCopy\Loki.MsSqlDbCopy.csproj", "{59EF332B-6659-4849-AE49-4ED5304E09D6}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Loki.MsSqlDbCopy.IntegrationTests", "Loki.MsSqlDbCopy.IntegrationTests\Loki.MsSqlDbCopy.IntegrationTests.csproj", "{2F385914-601A-4DC5-A658-9817DFA0C17B}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Loki.MsSqlDbCopy.IntegrationTests", "Loki.MsSqlDbCopy.IntegrationTests\Loki.MsSqlDbCopy.IntegrationTests.csproj", "{2F385914-601A-4DC5-A658-9817DFA0C17B}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

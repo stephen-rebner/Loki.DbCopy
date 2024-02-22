@@ -15,6 +15,9 @@ public class DropDatabaseIfExistsCommand : IDatabaseCopyCommand
 
     public async Task Copy()
     {
+        var test = _dbCopyContext.DbCopyOptions.DropDatabaseIfExists;
+        
+        test = true;
         if (_dbCopyContext.DbCopyOptions.DropDatabaseIfExists)
         {
             var sqlBuilder = new SqlBuilder();
