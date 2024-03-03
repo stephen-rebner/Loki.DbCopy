@@ -5,16 +5,16 @@ using Loki.DbCopy.Core.DbCopyOptions;
 
 namespace Loki.DbCopy.MsSqlServer;
 
-public class MsSqlDbCopier(IDbCopyContext dbCopyContext, IList<IDatabaseCopyCommand> databaseCopyCommands)
+public class MsSqlDbCopier(IDbCopyContext dbCopyContext, IEnumerable<IDatabaseCopyCommand> databaseCopyCommands)
     : DbCopier(dbCopyContext, databaseCopyCommands)
 {
-    public override void Copy(string sourceConnectionString, string destinationConnectionString)
+    public override async Task Copy(string sourceConnectionString, string destinationConnectionString)
     {
-        Copy(sourceConnectionString, destinationConnectionString, new DbCopyOptions());
+        await Copy(sourceConnectionString, destinationConnectionString, new DbCopyOptions());
     }
 
-    public override void Copy(string sourceConnectionString, string destinationConnectionString, DbCopyOptions dbCopyOptions)
+    public override async Task Copy(string sourceConnectionString, string destinationConnectionString, DbCopyOptions dbCopyOptions)
     {
-       base.Copy(sourceConnectionString, destinationConnectionString, dbCopyOptions);
+       await base.Copy(sourceConnectionString, destinationConnectionString, dbCopyOptions);
     }
 }

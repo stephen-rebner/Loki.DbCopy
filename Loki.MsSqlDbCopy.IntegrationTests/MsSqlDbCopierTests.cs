@@ -1,38 +1,21 @@
-﻿using DotNet.Testcontainers.Builders;
-using DotNet.Testcontainers.Containers;
+﻿using Loki.DbCopy.Core;
+using Loki.DbCopy.Core.DbCopyOptions;
+using Loki.DbCopy.IntegrationTests.BaseIntegrationTests;
+using Microsoft.Extensions.DependencyInjection;
 
 namespace Loki.DbCopy.IntegrationTests;
 
-public class MsSqlDbCopierTests
+public class MsSqlDbCopierTests : BaseMsSqlDbCopierIntegrationTests
 {
-    private IContainer _container = null!;
-
-
-    [SetUp]
-    public async Task SetUp()
-    {
-        _container = new ContainerBuilder()
-            .WithImage("stephenr1983/northwind-db-sqlserver:latest")
-            .WithPortBinding(1433, 1433)
-            .Build();
-
-        await _container
-            .StartAsync()
-            .ConfigureAwait(false);
-    }
-
-    [TearDown]
-    public async Task TearDown()
-    {
-        await _container
-            .StopAsync()
-            .ConfigureAwait(false);
-    }
-
-
     [Test]
-    public void Copy_ShouldCopyAllDataFromAllDbTables()
+    public async Task Copy_ShouldCopyAllDataFromAllDbTables()
     {
+        // Arrange
+        var dbCopier = ServiceProvider.GetRequiredService<IDatabaseCopier>();
+        
+        // Act
+        await dbCopier.Copy("Server=localhost,1433;Database=Northwind;User Id=sa;Password=Password123", "Server=localhost,1433;Database=NorthwindCopy;User Id=sa;Password=Password123");
+        
         Assert.IsTrue(false);
     }
 }

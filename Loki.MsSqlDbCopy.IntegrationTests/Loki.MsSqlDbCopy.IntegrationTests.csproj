@@ -17,4 +17,7 @@
         <PackageReference Include="TestContainers.Container.Database" Version="1.5.4"/>
         <PackageReference Include="Testcontainers.MsSql" Version="3.7.0"/>
     </ItemGroup>
+    <ItemGroup>
+      <ProjectReference Include="..\Loki.DbCopy.MsSqlServer\Loki.DbCopy.MsSqlServer.csproj" />
+    </ItemGroup>
 </Project>

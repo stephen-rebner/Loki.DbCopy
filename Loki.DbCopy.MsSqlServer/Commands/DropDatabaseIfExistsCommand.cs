@@ -1,6 +1,5 @@
 ﻿using System.Data.SqlClient;
 using Dapper;
-using Loki.DbCopy.Core;
 using Loki.DbCopy.Core.Commands;
 using Loki.DbCopy.Core.Context;
 

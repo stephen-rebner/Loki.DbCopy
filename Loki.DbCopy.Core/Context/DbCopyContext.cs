@@ -1,6 +1,6 @@
 ﻿namespace Loki.DbCopy.Core.Context;
 
-public class DbCopyContext
+public class DbCopyContext : IDbCopyContext
 {
     public string SourceConnectionString { get; set; } = string.Empty;
 

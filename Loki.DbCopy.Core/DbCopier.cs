@@ -1,19 +1,18 @@
 ﻿using CommunityToolkit.Diagnostics;
 using Loki.DbCopy.Core.Commands;
 using Loki.DbCopy.Core.Context;
-using Loki.DbCopy.Core.DbCopyOptions;
 
 namespace Loki.DbCopy.Core;
 
 public abstract class DbCopier(IDbCopyContext dbCopyContext, IEnumerable<IDatabaseCopyCommand> databaseCopyCommands)
     : IDatabaseCopier
 {
-    public virtual void Copy(string sourceConnectionString, string destinationConnectionString)
+    public virtual async Task Copy(string sourceConnectionString, string destinationConnectionString)
     {
-        Copy(sourceConnectionString, destinationConnectionString, new DbCopyOptions.DbCopyOptions());
+        await Copy(sourceConnectionString, destinationConnectionString, new DbCopyOptions.DbCopyOptions());
     }
 
-    public virtual void Copy(
+    public virtual async Task Copy(
         string sourceConnectionString, 
         string destinationConnectionString,
         DbCopyOptions.DbCopyOptions dbCopyOptions)
@@ -28,7 +27,7 @@ public abstract class DbCopier(IDbCopyContext dbCopyContext, IEnumerable<IDataba
 
         foreach (var databaseCopyCommand in databaseCopyCommands)
         {
-            databaseCopyCommand.Execute();
+            await databaseCopyCommand.Execute();
         }
     }
 }
