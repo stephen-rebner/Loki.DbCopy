@@ -2,7 +2,7 @@
 
 public class DbCopyOptions
 {
-    public bool DropDatabaseIfExists { get; set; } = true;
+    public bool DropAndRecreateDatabase { get; set; } = true;
     public bool CopyData { get; set; } = true;
     public bool CopySchema { get; set; } = true;
     public bool CopyIndexes { get; set; } = true;

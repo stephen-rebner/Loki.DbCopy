@@ -5,21 +5,32 @@ using Loki.DbCopy.Core.Context;
 
 namespace Loki.DbCopy.MsSqlServer.Commands;
 
+/// <summary>
+/// MsSqlServer command responsible for dropping the destination database if it exists.
+/// </summary>
 public class DropDatabaseIfExistsCommand(IDbCopyContext dbCopyContext) : IDatabaseCopyCommand
 {
+    /// <summary>
+    /// Drops the database if the database exists and the DropAndRecreateDatabase option is set to true.
+    /// Otherwise, this step is skipped.
+    /// </summary>
     public async Task Execute()
     {
-        if (dbCopyContext.DbCopyOptions.DropDatabaseIfExists)
+        if (dbCopyContext.DbCopyOptions.DropAndRecreateDatabase)
         {
             var sqlBuilder = new SqlBuilder();
-            var template = sqlBuilder.AddTemplate(
-                    "IF EXISTS(SELECT * FROM sys.databases WHERE name = @databaseName) DROP DATABASE /**where**/");
-
+          
             using var sqlConnection = new SqlConnection(dbCopyContext.DestinationConnectionString);
-
-            sqlBuilder.Where("databaseName = @databaseName", new { sqlConnection.Database });
-
-            await sqlConnection.ExecuteAsync(template.RawSql, template.Parameters);
+            
+            sqlConnection.Open();
+            
+            var databaseName = sqlConnection.Database;
+            
+            sqlConnection.ChangeDatabase("master");
+            
+            var template = sqlBuilder.AddTemplate($"DROP DATABASE [{databaseName}]");
+            
+            await sqlConnection.ExecuteAsync(template.RawSql); 
         }
     }
 }
