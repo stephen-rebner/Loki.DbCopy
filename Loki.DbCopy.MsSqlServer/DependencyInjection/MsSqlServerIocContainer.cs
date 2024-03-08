@@ -15,7 +15,8 @@ public static class MsSqlServerIocContainer
         services.AddDbCopy();
         
         // Register the IDatabaseCopyCommand classes
-        services.AddScoped<IDatabaseCopyCommand, DropDatabaseIfExistsCommand>();
+        services.AddScoped<IDatabaseCopyCommand, DropDatabaseCommand>();
+        services.AddScoped<IDatabaseCopyCommand, CreateDatabaseCommand>();
         
         // Register the MsSqlServerDatabaseCopier class
         services.AddScoped<IDatabaseCopier, MsSqlDbCopier>();
