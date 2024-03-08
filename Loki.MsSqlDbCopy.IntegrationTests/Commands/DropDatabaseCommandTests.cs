@@ -9,7 +9,7 @@ using Microsoft.Extensions.DependencyInjection;
 
 namespace Loki.DbCopy.IntegrationTests.Commands;
 
-public class DropDatabaseIfExistsCommandTests : BaseMsSqlDbCopierIntegrationTests
+public class DropDatabaseCommandTests : BaseMsSqlDbCopierIntegrationTests
 {
     
     [Test]
@@ -43,7 +43,7 @@ public class DropDatabaseIfExistsCommandTests : BaseMsSqlDbCopierIntegrationTest
         
         var dropDatabaseIfExistsCommand = ServiceProvider
             .GetServices<IDatabaseCopyCommand>()
-            .First(command => command.GetType() == typeof(DropDatabaseIfExistsCommand));
+            .First(command => command.GetType() == typeof(DropDatabaseCommand));
         
         await dropDatabaseIfExistsCommand.Execute();
         
@@ -84,7 +84,7 @@ public class DropDatabaseIfExistsCommandTests : BaseMsSqlDbCopierIntegrationTest
         
         var dropDatabaseIfExistsCommand = ServiceProvider
             .GetServices<IDatabaseCopyCommand>()
-            .First(command => command.GetType() == typeof(DropDatabaseIfExistsCommand));
+            .First(command => command.GetType() == typeof(DropDatabaseCommand));
         
         await dropDatabaseIfExistsCommand.Execute();
         

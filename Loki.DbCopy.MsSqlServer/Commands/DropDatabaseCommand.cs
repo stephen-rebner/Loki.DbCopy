@@ -8,10 +8,10 @@ namespace Loki.DbCopy.MsSqlServer.Commands;
 /// <summary>
 /// MsSqlServer command responsible for dropping the destination database if it exists.
 /// </summary>
-public class DropDatabaseIfExistsCommand(IDbCopyContext dbCopyContext) : IDatabaseCopyCommand
+public class DropDatabaseCommand(IDbCopyContext dbCopyContext) : IDatabaseCopyCommand
 {
     /// <summary>
-    /// Drops the database if the database exists and the DropAndRecreateDatabase option is set to true.
+    /// Drops the database if the DropAndRecreateDatabase option is set to true.
     /// Otherwise, this step is skipped.
     /// </summary>
     public async Task Execute()
