@@ -18,17 +18,22 @@ public class DropDatabaseCommand(IDbCopyContext dbCopyContext) : IDatabaseCopyCo
     {
         if (dbCopyContext.DbCopyOptions.DropAndRecreateDatabase)
         {
+            var databaseToDropName = new SqlConnectionStringBuilder(dbCopyContext.DestinationConnectionString)
+                .InitialCatalog;
+            
+            var masterConnectionStringBuilder = new SqlConnectionStringBuilder(dbCopyContext.DestinationConnectionString)
+            {
+                // Change the Initial Catalog (Database) to 'master'
+                InitialCatalog = "master"
+            };
+            
             var sqlBuilder = new SqlBuilder();
           
-            using var sqlConnection = new SqlConnection(dbCopyContext.DestinationConnectionString);
-            
-            sqlConnection.Open();
+            using var sqlConnection = new SqlConnection(masterConnectionStringBuilder.ToString());
             
             var databaseName = sqlConnection.Database;
             
-            sqlConnection.ChangeDatabase("master");
-            
-            var template = sqlBuilder.AddTemplate($"DROP DATABASE [{databaseName}]");
+            var template = sqlBuilder.AddTemplate($"DROP DATABASE [{databaseToDropName}]");
             
             await sqlConnection.ExecuteAsync(template.RawSql); 
         }
