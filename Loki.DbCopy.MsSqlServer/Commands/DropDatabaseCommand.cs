@@ -31,8 +31,6 @@ public class DropDatabaseCommand(IDbCopyContext dbCopyContext) : IDatabaseCopyCo
           
             using var sqlConnection = new SqlConnection(masterConnectionStringBuilder.ToString());
             
-            var databaseName = sqlConnection.Database;
-            
             var template = sqlBuilder.AddTemplate($"DROP DATABASE [{databaseToDropName}]");
             
             await sqlConnection.ExecuteAsync(template.RawSql); 
