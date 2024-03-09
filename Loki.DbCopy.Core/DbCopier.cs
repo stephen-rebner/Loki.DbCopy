@@ -21,9 +21,9 @@ public abstract class DbCopier(IDbCopyContext dbCopyContext, IEnumerable<IDataba
         Guard.IsNotNullOrEmpty(destinationConnectionString);
         Guard.IsNotNull(dbCopyOptions);
 
-        dbCopyContext.SourceConnectionString = sourceConnectionString;
-        dbCopyContext.DestinationConnectionString = destinationConnectionString;
-        dbCopyContext.DbCopyOptions = dbCopyOptions;
+        dbCopyContext.SetSourceConnectionString(sourceConnectionString);
+        dbCopyContext.SetDestinationConnectionString(destinationConnectionString);
+        dbCopyContext.SetDbCopyOptions(dbCopyOptions);
 
         foreach (var databaseCopyCommand in databaseCopyCommands)
         {
