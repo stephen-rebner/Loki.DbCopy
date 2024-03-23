@@ -3,8 +3,8 @@
 public class DbCopyOptions
 {
     public bool DropAndRecreateDatabase { get; set; } = true;
+    public bool CreateSchemas { get; set; } = true;
     public bool CopyData { get; set; } = true;
-    public bool CopySchema { get; set; } = true;
     public bool CopyIndexes { get; set; } = true;
     public bool CopyForeignKeys { get; set; } = true;
     public bool CopyTriggers { get; set; } = true;
