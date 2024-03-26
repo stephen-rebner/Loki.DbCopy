@@ -1,96 +1,65 @@
 ﻿using System.Data.SqlClient;
 using Dapper;
 using FluentAssertions;
-using Loki.DbCopy.Core.Commands;
-using Loki.DbCopy.Core.Context;
+using Loki.DbCopy.Core;
+using Loki.DbCopy.Core.DbCopyOptions;
 using Loki.DbCopy.IntegrationTests.BaseIntegrationTests;
-using Loki.DbCopy.MsSqlServer.Commands;
 using Microsoft.Extensions.DependencyInjection;
 
 namespace Loki.DbCopy.IntegrationTests.Commands;
 
 public class CreateSchemasCommandTests : BaseMsSqlDbCopierIntegrationTests
 {
-    
     [Test]
     public async Task Execute_CopiesAllCustomSchemasFromTheSourceDatabase_WhenTheCreateSchemasOptionIsSetToTrue()
     {
+        const string Schema1 = "Schema1";
+        const string Schema2 = "Schema2";
+        
         // Arrange
         const string destinationDatabaseName = "NorthwindDBCopy";
         
-        var dbCopyContext = ServiceProvider.GetRequiredService<IDbCopyContext>();
-        
-        // Ensure that we create the schemas
-        dbCopyContext.DbCopyOptions.CreateSchemas = true;
+        var dbCopyOptions = new DbCopyOptions
+        {
+            DropAndRecreateDatabase = true,
+            // Ensure that we create the schemas
+            CreateSchemas = true
+        };
 
-        dbCopyContext.SetSourceConnectionString(SourceNorthWindDbContainer.GetConnectionString());
-
-        dbCopyContext.SetDestinationConnectionString(DestinationNorthWindDbContainer.GetConnectionString());
+        var sourceConnectionString = SourceNorthWindDbContainer.GetConnectionString();
         
-        // Create an empty destination database to be dropped
-        await using var connection = new SqlConnection(dbCopyContext.DestinationConnectionString);
-
-        await connection.OpenAsync();
-        
-        await connection.ExecuteAsync($"CREATE DATABASE {destinationDatabaseName}");
-        
-        // Act
-        dbCopyContext.SetDestinationConnectionString(
-                        @$"Server={DestinationNorthWindDbContainer.Hostname},{DestinationNorthWindDbContainer.GetMappedPublicPort(1433)};
+        var destinationConnectionString = @$"Server={DestinationNorthWindDbContainer.Hostname},{DestinationNorthWindDbContainer.GetMappedPublicPort(1433)};
                         Database={destinationDatabaseName};
                         User Id={UserId};
-                        Password={Password}");
+                        Password={Password}";
         
-        var dropDatabaseIfExistsCommand = ServiceProvider
-            .GetServices<IDatabaseCopyCommand>()
-            .First(command => command.GetType() == typeof(DropDatabaseCommand));
-        
-        await dropDatabaseIfExistsCommand.Execute();
-        
-        // Assert
-        var destinationDbCount = await connection.QueryFirstOrDefaultAsync<int>($"SELECT COUNT(*) FROM sys.databases WHERE name = '{destinationDatabaseName}'");
+        // create 2 schemas in the source database
+        await using (var sourceDbConnection = new SqlConnection(sourceConnectionString))
+        {
+            await sourceDbConnection.OpenAsync();
 
-        destinationDbCount.Should().Be(0);
-    }
-    
-    [Test]
-    public async Task Execute_DoesNotDropAnExistingDatabase_WhenDatabaseExists_AndDropDatabaseAndRecreateDatabaseIsFalse()
-    {
-        // Arrange
-        const string destinationDatabaseName = "NorthwindDBCopy";
-        
-        var dbCopyContext = ServiceProvider.GetRequiredService<IDbCopyContext>();
-        
-        // Ensure that we drop and recreate the database
-        dbCopyContext.DbCopyOptions.DropAndRecreateDatabase = false;
+            await sourceDbConnection.ExecuteAsync($"CREATE SCHEMA {Schema1}");
 
-        dbCopyContext.SetSourceConnectionString(SourceNorthWindDbContainer.GetConnectionString());
+            await sourceDbConnection.ExecuteAsync($"CREATE SCHEMA {Schema2}");
+        }
 
-        dbCopyContext.SetDestinationConnectionString(DestinationNorthWindDbContainer.GetConnectionString());
-        
-        // Create an empty destination database to be dropped
-        await using var connection = new SqlConnection(dbCopyContext.DestinationConnectionString);
-
-        await connection.OpenAsync();
-        
-        await connection.ExecuteAsync($"CREATE DATABASE {destinationDatabaseName}");
-        
         // Act
-        dbCopyContext.SetDestinationConnectionString(
-                        @$"Server={DestinationNorthWindDbContainer.Hostname},{DestinationNorthWindDbContainer.GetMappedPublicPort(1433)};
-                        Database={destinationDatabaseName};
-                        User Id={UserId};
-                        Password={Password}");
-        
-        var dropDatabaseIfExistsCommand = ServiceProvider
-            .GetServices<IDatabaseCopyCommand>()
-            .First(command => command.GetType() == typeof(DropDatabaseCommand));
-        
-        await dropDatabaseIfExistsCommand.Execute();
-        
-        // Assert
-        var destinationDbCount = await connection.QueryFirstOrDefaultAsync<int>($"SELECT COUNT(*) FROM sys.databases WHERE name = '{destinationDatabaseName}'");
+        var databaseCopier = ServiceProvider.GetRequiredService<IDatabaseCopier>();
 
-        destinationDbCount.Should().Be(1); // The database should still exist
+        await databaseCopier.Copy(sourceConnectionString, destinationConnectionString, dbCopyOptions);
+
+        // Assert
+         
+        // create a connection to the destination database
+        await using (var destinationDbConnection = new SqlConnection(destinationConnectionString))
+        {
+            var expectedSchemaNames = new [] { Schema1, Schema2 };
+            
+            var destinationSchemaNames = await destinationDbConnection.QueryAsync<string>(
+                    $"SELECT name AS SchemaName FROM sys.schemas where name IN ('{Schema1}', '{Schema2}')");
+            
+            // assert if the destination schema names contain the expected schema names
+            destinationSchemaNames.Should().BeEquivalentTo(expectedSchemaNames);
+        }
     }
 }

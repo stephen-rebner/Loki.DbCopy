@@ -29,7 +29,7 @@ public class MsSqlSchemasRepository : IMsSqlSchemasRepository
                         'db_securityadmin',
                         'guest',
                         'INFORMATION_SCHEMA'
-                    ););";
+                    );";
         
         var sourceSchemas = await sqlConnection.QueryAsync<string>(retrieveSchemasSql);
         
@@ -39,18 +39,12 @@ public class MsSqlSchemasRepository : IMsSqlSchemasRepository
     public async Task CreateSchemas(string connectionString, string[] schemaNames)
     {
         await using var sqlConnection = new SqlConnection(connectionString);
-        
         await sqlConnection.OpenAsync();
-        
-        var sqlBuilder = new StringBuilder();
-        
+
         foreach (var schemaName in schemaNames)
         {
             var createSchemaSql = $"CREATE SCHEMA [{schemaName}];";
-
-            sqlBuilder.AppendLine(createSchemaSql);
+            await sqlConnection.ExecuteAsync(createSchemaSql);
         }
-
-        await sqlConnection.ExecuteAsync(sqlBuilder.ToString());
     }
 }

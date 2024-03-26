@@ -21,7 +21,7 @@ public class CreateSchemasCommand(IDbCopyContext dbCopyContext, IMsSqlSchemasRep
             return;
         }
         
-        var schemaNames = await msSqlSchemasRepository.LoadSchemas(dbCopyContext.DestinationConnectionString);
+        var schemaNames = await msSqlSchemasRepository.LoadSchemas(dbCopyContext.SourceConnectionString);
 
         if (schemaNames.Length > 0)
         {
