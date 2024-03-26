@@ -46,7 +46,7 @@ public class CreateSchemasCommandTests : BaseMsSqlDbCopierIntegrationTests
         // Act
         var databaseCopier = ServiceProvider.GetRequiredService<IMsSqlDbCopier>();
 
-        await databaseCopier.Copy(sourceConnectionString, destinationConnectionString, dbCopyOptions);
+        await databaseCopier.CopyDatabaseStructure(sourceConnectionString, destinationConnectionString, dbCopyOptions);
 
         // Assert
          

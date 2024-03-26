@@ -1,5 +1,4 @@
 ﻿using CommunityToolkit.Diagnostics;
-using Loki.DbCopy.Core;
 using Loki.DbCopy.Core.Context;
 using Loki.DbCopy.MsSqlServer.Commands.Interfaces;
 
@@ -8,12 +7,17 @@ namespace Loki.DbCopy.MsSqlServer;
 public class MsSqlDbCopier(IDbCopyContext dbCopyContext, IEnumerable<IDatabaseCopyCommand> databaseCopyCommands) 
     : IMsSqlDbCopier
 {
-    public async Task Copy(string sourceConnectionString, string destinationConnectionString)
+    public async Task CopyDatabaseStructure(string sourceConnectionString, string destinationConnectionString)
     {
-        await Copy(sourceConnectionString, destinationConnectionString, new DbCopyOptions());
+        await CopyDatabaseStructure(sourceConnectionString, destinationConnectionString, new DbCopyOptions());
     }
 
-    public virtual async Task Copy(
+    public async Task CopySchemas(string sourceConnectionString, string destinationConnectionString)
+    {
+        throw new NotImplementedException();
+    }
+
+    public async Task CopyDatabaseStructure(
         string sourceConnectionString, 
         string destinationConnectionString,
         DbCopyOptions dbCopyOptions)
@@ -22,13 +26,13 @@ public class MsSqlDbCopier(IDbCopyContext dbCopyContext, IEnumerable<IDatabaseCo
         Guard.IsNotNullOrEmpty(destinationConnectionString);
         Guard.IsNotNull(dbCopyOptions);
 
-        dbCopyContext.SetSourceConnectionString(sourceConnectionString);
-        dbCopyContext.SetDestinationConnectionString(destinationConnectionString);
-        dbCopyContext.SetDbCopyOptions(dbCopyOptions);
+        await DropDatabaseAndRecreateDestinationDatabase(destinationConnectionString);
+        await CopySchemas(sourceConnectionString, destinationConnectionString);
+        
+    }
 
-        foreach (var databaseCopyCommand in databaseCopyCommands)
-        {
-            await databaseCopyCommand.Execute();
-        }
+    public async Task DropDatabaseAndRecreateDestinationDatabase(string connectionString)
+    {
+        throw new NotImplementedException();
     }
 }

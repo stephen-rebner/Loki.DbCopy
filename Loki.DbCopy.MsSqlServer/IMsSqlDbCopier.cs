@@ -2,7 +2,12 @@
 
 public interface IMsSqlDbCopier
 {
-    Task Copy(string sourceConnectionString, string destinationConnectionString);
+    Task CopyDatabaseStructure(string sourceConnectionString, string destinationConnectionString);
     
-    Task Copy(string sourceConnectionString, string destinationConnectionString, DbCopyOptions dbCopyOptions);
+    Task CopySchemas(string sourceConnectionString, string destinationConnectionString);
+
+
+    Task CopyDatabaseStructure(string sourceConnectionString, string destinationConnectionString, DbCopyOptions dbCopyOptions);
+
+    Task DropDatabaseAndRecreateDestinationDatabase(string connectionString);
 }

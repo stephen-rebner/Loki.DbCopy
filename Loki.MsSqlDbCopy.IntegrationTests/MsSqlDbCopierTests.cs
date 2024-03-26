@@ -14,7 +14,7 @@ public class MsSqlDbCopierTests : BaseMsSqlDbCopierIntegrationTests
         var dbCopier = ServiceProvider.GetRequiredService<IMsSqlDbCopier>();
         
         // Act
-        await dbCopier.Copy("Server=localhost,1433;NorthwindDatabaseBackup=Northwind;User Id=sa;Password=Password123", "Server=localhost,1433;NorthwindDatabaseBackup=NorthwindCopy;User Id=sa;Password=Password123");
+        await dbCopier.CopyDatabaseStructure("Server=localhost,1433;NorthwindDatabaseBackup=Northwind;User Id=sa;Password=Password123", "Server=localhost,1433;NorthwindDatabaseBackup=NorthwindCopy;User Id=sa;Password=Password123");
         
         Assert.IsTrue(false);
     }
