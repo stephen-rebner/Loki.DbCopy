@@ -11,12 +11,12 @@ public abstract class BaseMsSqlDbCopierIntegrationTests
     protected MsSqlContainer SourceNorthWindDbContainer = null!;
     
     protected MsSqlContainer DestinationNorthWindDbContainer = null!;
-    
-    protected string UserId = "sa";
-    
-    protected string Password = "Password123";
 
-    
+    protected const string UserId = "sa";
+
+    protected const string Password = "Password123";
+
+
     [SetUp]
     public async Task Setup()
     {
@@ -49,7 +49,7 @@ public abstract class BaseMsSqlDbCopierIntegrationTests
         // create a sql server container
         DestinationNorthWindDbContainer = new MsSqlBuilder()
             .WithPassword(Password)
-            .WithPortBinding(52774, 1433)
+            // .WithPortBinding(52774, 1433)
             .WithWorkingDirectory("/var/opt/mssql")
             .WithImage("mcr.microsoft.com/mssql/server:2022-latest")
             .Build();
@@ -62,7 +62,7 @@ public abstract class BaseMsSqlDbCopierIntegrationTests
         // create a sql server container
         SourceNorthWindDbContainer = new MsSqlBuilder()
             .WithPassword(Password)
-            .WithPortBinding(1433, 1433)
+            // .WithPortBinding(1433, 1433)
             .WithWorkingDirectory("/var/opt/mssql")
             .WithImage("mcr.microsoft.com/mssql/server:2022-latest")
             .Build();

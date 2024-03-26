@@ -3,7 +3,7 @@ using Loki.DbCopy.Core.Context;
 
 namespace Loki.DbCopy.MsSqlServer.Context;
 
-public class DbCopyContext : IDbCopyContext
+internal class DbCopyContext : IDbCopyContext
 {
     public string SourceConnectionString { get; private set; } = string.Empty;
 

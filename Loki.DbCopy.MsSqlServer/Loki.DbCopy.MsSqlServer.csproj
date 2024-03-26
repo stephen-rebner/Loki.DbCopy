@@ -7,6 +7,10 @@
     </PropertyGroup>
 
     <ItemGroup>
+        <InternalsVisibleTo Include="Loki.MsSqlDbCopy.IntegrationTests" />
+    </ItemGroup>
+
+    <ItemGroup>
         <ProjectReference Include="..\Loki.MsSqlDbCopy.Infrastructure\Loki.MsSqlDbCopy.Infrastructure.csproj" />
     </ItemGroup>
 

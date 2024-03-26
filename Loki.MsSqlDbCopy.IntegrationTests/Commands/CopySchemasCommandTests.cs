@@ -8,7 +8,7 @@ using Microsoft.Extensions.DependencyInjection;
 
 namespace Loki.DbCopy.IntegrationTests.Commands;
 
-public class CreateSchemasCommandTests : BaseMsSqlDbCopierIntegrationTests
+public class CopySchemasCommandTests : BaseMsSqlDbCopierIntegrationTests
 {
     [Test]
     public async Task Execute_CopiesAllCustomSchemasFromTheSourceDatabase_WhenTheCreateSchemasOptionIsSetToTrue()

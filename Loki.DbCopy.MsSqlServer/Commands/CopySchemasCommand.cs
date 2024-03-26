@@ -7,7 +7,7 @@ namespace Loki.DbCopy.MsSqlServer.Commands;
 /// <summary>
 /// MsSqlServer command responsible for dropping the destination database if it exists.
 /// </summary>
-public class CreateSchemasCommand(IDbCopyContext dbCopyContext, IMsSqlSchemasRepository msSqlSchemasRepository) 
+internal class CopySchemasCommand(IDbCopyContext dbCopyContext, IMsSqlSchemasRepository msSqlSchemasRepository) 
     : IDatabaseCopyCommand
 {
     /// <summary>
