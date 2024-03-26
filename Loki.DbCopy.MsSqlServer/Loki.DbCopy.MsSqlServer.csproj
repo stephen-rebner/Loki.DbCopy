@@ -7,8 +7,12 @@
     </PropertyGroup>
 
     <ItemGroup>
-        <ProjectReference Include="..\Loki.DbCopy.Core\Loki.DbCopy.Core.csproj"/>
         <ProjectReference Include="..\Loki.MsSqlDbCopy.Infrastructure\Loki.MsSqlDbCopy.Infrastructure.csproj" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <PackageReference Include="CommunityToolkit.Diagnostics" Version="8.2.2" />
+      <PackageReference Include="Microsoft.Extensions.DependencyInjection.Abstractions" Version="2.2.0" />
     </ItemGroup>
 
 </Project>

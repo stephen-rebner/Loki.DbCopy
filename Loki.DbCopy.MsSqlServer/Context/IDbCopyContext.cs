@@ -1,4 +1,6 @@
-﻿namespace Loki.DbCopy.Core.Context;
+﻿using Loki.DbCopy.MsSqlServer;
+
+namespace Loki.DbCopy.Core.Context;
 
 public interface IDbCopyContext
 {
@@ -6,11 +8,11 @@ public interface IDbCopyContext
     
     string DestinationConnectionString { get;  }
     
-    DbCopyOptions.DbCopyOptions DbCopyOptions { get; }
+    DbCopyOptions DbCopyOptions { get; }
     
     void SetSourceConnectionString(string sourceConnectionString);
     
     void SetDestinationConnectionString(string destinationConnectionString);
     
-    void SetDbCopyOptions(DbCopyOptions.DbCopyOptions dbCopyOptions);
+    void SetDbCopyOptions(DbCopyOptions dbCopyOptions);
 }

@@ -1,7 +1,7 @@
 ﻿using System.Data.SqlClient;
 using Dapper;
-using Loki.DbCopy.Core.Commands;
 using Loki.DbCopy.Core.Context;
+using Loki.DbCopy.MsSqlServer.Commands.Interfaces;
 
 namespace Loki.DbCopy.MsSqlServer.Commands;
 

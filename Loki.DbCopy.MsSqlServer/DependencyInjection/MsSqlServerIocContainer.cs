@@ -1,8 +1,7 @@
-﻿using Loki.DbCopy.Core;
-using Loki.DbCopy.Core.Commands;
-using Loki.DbCopy.Core.DbCopyOptions;
-using Loki.DbCopy.Core.DependencyInjection;
+﻿using Loki.DbCopy.Core.Context;
 using Loki.DbCopy.MsSqlServer.Commands;
+using Loki.DbCopy.MsSqlServer.Commands.Interfaces;
+using Loki.DbCopy.MsSqlServer.Context;
 using Loki.MsSqlDbCopy.Infrastructure;
 using Loki.MsSqlDbCopy.Infrastructure.Interfaces;
 using Microsoft.Extensions.DependencyInjection;
@@ -14,7 +13,8 @@ public static class MsSqlServerIocContainer
     // Add an extension method for IServiceCollection
     public static IServiceCollection AddMsSqlServerDbCopy(this IServiceCollection services)
     {
-        services.AddDbCopy();
+        // Register the IDbCopyContext and DbCopyContext classes
+        services.AddSingleton<IDbCopyContext, DbCopyContext>();
         
         // Register the IDatabaseCopyCommand classes
         services.AddScoped<IDatabaseCopyCommand, DropDatabaseCommand>();
@@ -25,7 +25,7 @@ public static class MsSqlServerIocContainer
         services.AddScoped<IMsSqlSchemasRepository, MsSqlSchemasRepository>();
         
         // Register the MsSqlServerDatabaseCopier class
-        services.AddScoped<IDatabaseCopier, MsSqlDbCopier>();
+        services.AddScoped<IMsSqlDbCopier, MsSqlDbCopier>();
 
         // Return the IServiceCollection
         return services;

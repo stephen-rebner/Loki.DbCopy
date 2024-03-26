@@ -1,7 +1,5 @@
 
 Microsoft Visual Studio Solution File, Format Version 12.00
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Loki.DbCopy.Core", "Loki.DbCopy.Core\Loki.DbCopy.Core.csproj", "{59EF332B-6659-4849-AE49-4ED5304E09D6}"
-EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Loki.MsSqlDbCopy.IntegrationTests", "Loki.MsSqlDbCopy.IntegrationTests\Loki.MsSqlDbCopy.IntegrationTests.csproj", "{2F385914-601A-4DC5-A658-9817DFA0C17B}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Loki.DbCopy.MsSqlServer", "Loki.DbCopy.MsSqlServer\Loki.DbCopy.MsSqlServer.csproj", "{EE278684-2372-44D1-A7E3-AE4CC6553AE2}"
@@ -14,10 +12,6 @@ Global
 		Release|Any CPU = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
-		{59EF332B-6659-4849-AE49-4ED5304E09D6}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{59EF332B-6659-4849-AE49-4ED5304E09D6}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{59EF332B-6659-4849-AE49-4ED5304E09D6}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{59EF332B-6659-4849-AE49-4ED5304E09D6}.Release|Any CPU.Build.0 = Release|Any CPU
 		{2F385914-601A-4DC5-A658-9817DFA0C17B}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{2F385914-601A-4DC5-A658-9817DFA0C17B}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{2F385914-601A-4DC5-A658-9817DFA0C17B}.Release|Any CPU.ActiveCfg = Release|Any CPU

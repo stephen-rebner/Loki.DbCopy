@@ -1,4 +1,4 @@
-﻿namespace Loki.DbCopy.Core.DbCopyOptions;
+﻿namespace Loki.DbCopy.MsSqlServer;
 
 public class DbCopyOptions
 {

@@ -2,8 +2,8 @@
 using Dapper;
 using FluentAssertions;
 using Loki.DbCopy.Core;
-using Loki.DbCopy.Core.DbCopyOptions;
 using Loki.DbCopy.IntegrationTests.BaseIntegrationTests;
+using Loki.DbCopy.MsSqlServer;
 using Microsoft.Extensions.DependencyInjection;
 
 namespace Loki.DbCopy.IntegrationTests.Commands;
@@ -44,7 +44,7 @@ public class CreateSchemasCommandTests : BaseMsSqlDbCopierIntegrationTests
         }
 
         // Act
-        var databaseCopier = ServiceProvider.GetRequiredService<IDatabaseCopier>();
+        var databaseCopier = ServiceProvider.GetRequiredService<IMsSqlDbCopier>();
 
         await databaseCopier.Copy(sourceConnectionString, destinationConnectionString, dbCopyOptions);
 

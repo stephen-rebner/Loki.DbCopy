@@ -1,7 +1,7 @@
 ﻿using System.Data.SqlClient;
-using System.Data.SqlTypes;
+using Loki.DbCopy.Core.Context;
 
-namespace Loki.DbCopy.Core.Context;
+namespace Loki.DbCopy.MsSqlServer.Context;
 
 public class DbCopyContext : IDbCopyContext
 {
@@ -9,7 +9,7 @@ public class DbCopyContext : IDbCopyContext
 
     public string DestinationConnectionString { get; private set; } = string.Empty;
 
-    public DbCopyOptions.DbCopyOptions DbCopyOptions { get; private set; } = new();
+    public DbCopyOptions DbCopyOptions { get; private set; } = new();
     
     public void SetSourceConnectionString(string sourceConnectionString)
     {
@@ -21,7 +21,7 @@ public class DbCopyContext : IDbCopyContext
         DestinationConnectionString = new SqlConnectionStringBuilder(destinationConnectionString).ToString();
     }
 
-    public void SetDbCopyOptions(DbCopyOptions.DbCopyOptions dbCopyOptions)
+    public void SetDbCopyOptions(DbCopyOptions dbCopyOptions)
     {
         DbCopyOptions = dbCopyOptions;
     }

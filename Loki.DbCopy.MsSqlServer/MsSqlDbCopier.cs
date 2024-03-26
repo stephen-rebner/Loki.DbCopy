@@ -1,20 +1,34 @@
-﻿using Loki.DbCopy.Core;
-using Loki.DbCopy.Core.Commands;
+﻿using CommunityToolkit.Diagnostics;
+using Loki.DbCopy.Core;
 using Loki.DbCopy.Core.Context;
-using Loki.DbCopy.Core.DbCopyOptions;
+using Loki.DbCopy.MsSqlServer.Commands.Interfaces;
 
 namespace Loki.DbCopy.MsSqlServer;
 
-public class MsSqlDbCopier(IDbCopyContext dbCopyContext, IEnumerable<IDatabaseCopyCommand> databaseCopyCommands)
-    : DbCopier(dbCopyContext, databaseCopyCommands)
+public class MsSqlDbCopier(IDbCopyContext dbCopyContext, IEnumerable<IDatabaseCopyCommand> databaseCopyCommands) 
+    : IMsSqlDbCopier
 {
-    public override async Task Copy(string sourceConnectionString, string destinationConnectionString)
+    public async Task Copy(string sourceConnectionString, string destinationConnectionString)
     {
         await Copy(sourceConnectionString, destinationConnectionString, new DbCopyOptions());
     }
 
-    public override async Task Copy(string sourceConnectionString, string destinationConnectionString, DbCopyOptions dbCopyOptions)
+    public virtual async Task Copy(
+        string sourceConnectionString, 
+        string destinationConnectionString,
+        DbCopyOptions dbCopyOptions)
     {
-       await base.Copy(sourceConnectionString, destinationConnectionString, dbCopyOptions);
+        Guard.IsNotNullOrEmpty(sourceConnectionString);
+        Guard.IsNotNullOrEmpty(destinationConnectionString);
+        Guard.IsNotNull(dbCopyOptions);
+
+        dbCopyContext.SetSourceConnectionString(sourceConnectionString);
+        dbCopyContext.SetDestinationConnectionString(destinationConnectionString);
+        dbCopyContext.SetDbCopyOptions(dbCopyOptions);
+
+        foreach (var databaseCopyCommand in databaseCopyCommands)
+        {
+            await databaseCopyCommand.Execute();
+        }
     }
 }

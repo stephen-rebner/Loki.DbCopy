@@ -1,4 +1,4 @@
-﻿namespace Loki.DbCopy.Core.Commands;
+﻿namespace Loki.DbCopy.MsSqlServer.Commands.Interfaces;
 
 public interface IDatabaseCopyCommand
 {

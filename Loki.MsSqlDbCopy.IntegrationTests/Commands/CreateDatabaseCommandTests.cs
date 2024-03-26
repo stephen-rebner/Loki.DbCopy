@@ -1,10 +1,10 @@
 ﻿using System.Data.SqlClient;
 using Dapper;
 using FluentAssertions;
-using Loki.DbCopy.Core.Commands;
 using Loki.DbCopy.Core.Context;
 using Loki.DbCopy.IntegrationTests.BaseIntegrationTests;
 using Loki.DbCopy.MsSqlServer.Commands;
+using Loki.DbCopy.MsSqlServer.Commands.Interfaces;
 using Microsoft.Extensions.DependencyInjection;
 
 namespace Loki.DbCopy.IntegrationTests.Commands;
