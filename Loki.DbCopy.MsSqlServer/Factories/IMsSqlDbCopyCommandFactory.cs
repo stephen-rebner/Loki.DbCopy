@@ -9,4 +9,23 @@ public interface IMsSqlDbCopyCommandFactory
     IDatabaseCopyCommand CreateDropDatabaseCommand();
     
     IDatabaseCopyCommand CreateCreateDatabaseCommand();
+    
+    IDatabaseCopyCommand CreateCopyTablesCommand();
+    
+    IDatabaseCopyCommand CreateCopyDataCommand();
+    
+    IDatabaseCopyCommand CreateCopyPrimaryKeysCommand();
+    
+    IDatabaseCopyCommand CreateCopyForeignKeysCommand();
+    
+    IDatabaseCopyCommand CreateCopyIndexesCommand();
+    
+    IDatabaseCopyCommand CreateCopyViewsCommand();
+    
+    IDatabaseCopyCommand CreateCopyStoredProceduresCommand();
+    
+    IDatabaseCopyCommand CreateCopyFunctionsCommand();
+    
+    IDatabaseCopyCommand CreateCopyTriggersCommand();
+    
 }

@@ -2,5 +2,7 @@
 
 public interface IMsSqlDbStructureCopier
 {
-    Task CopyDatabaseStructure();
+    Task CopyDatabaseAndSchemas();
+
+    Task CopyDatabaseObjects();
 }

@@ -24,8 +24,10 @@ public class MsSqlDbCopier(
         dbCopyContext.SetSourceConnectionString(sourceConnectionString);
         dbCopyContext.SetDestinationConnectionString(destinationConnectionString);
         dbCopyContext.SetDbCopyOptions(dbCopyOptions);
+        
+        await msSqlDbStructureCopier.CopyDatabaseAndSchemas();
+        await msSqlDbStructureCopier.CopyDatabaseObjects();
 
-        await msSqlDbStructureCopier.CopyDatabaseStructure(); 
     }
     
     public async Task CopyDatabaseData(string sourceConnectionString, string destinationConnectionString)
@@ -44,6 +46,8 @@ public class MsSqlDbCopier(
         dbCopyContext.SetDestinationConnectionString(destinationConnectionString);
         dbCopyContext.SetDbCopyOptions(dbCopyOptions);
 
+        // todo: disable primary keys, foreign keys, indexes, triggers, etc.
+        
         await msSqlDbDataCopier.CopyDatabaseData(); 
     }
     
@@ -63,8 +67,9 @@ public class MsSqlDbCopier(
         dbCopyContext.SetDestinationConnectionString(destinationConnectionString);
         dbCopyContext.SetDbCopyOptions(dbCopyOptions);
 
-        await msSqlDbStructureCopier.CopyDatabaseStructure();
+        await msSqlDbStructureCopier.CopyDatabaseAndSchemas();
         await msSqlDbDataCopier.CopyDatabaseData();
+        await msSqlDbStructureCopier.CopyDatabaseObjects();
     }
 
     private static void ValidateUserInput(string sourceConnectionString, string destinationConnectionString,
