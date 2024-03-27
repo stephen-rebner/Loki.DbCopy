@@ -1,14 +1,14 @@
 ﻿using System.Data.SqlClient;
 using Dapper;
-using Loki.MsSqlDbCopy.Infrastructure.Interfaces;
+using Loki.MsSqlDbCopy.Infrastructure.Repositories.Interfaces;
 
-namespace Loki.MsSqlDbCopy.Infrastructure;
+namespace Loki.MsSqlDbCopy.Infrastructure.Repositories;
 
 public class IndexesRepository : IIndexesRepository
 {
     public async Task<Index[]> LoadIndexes(string connectionString)
     {
-       var sql = @"
+        var sql = @"
                 SELECT 
                     SchemaName = s.name,
                     TableName = t.name, 
@@ -41,7 +41,7 @@ public class IndexesRepository : IIndexesRepository
         await using var connection = new SqlConnection(connectionString);
 
         var indexes = await connection.QueryAsync<Index>(sql);
-        
+
         return indexes?.ToArray() ?? Array.Empty<Index>();
     }
 

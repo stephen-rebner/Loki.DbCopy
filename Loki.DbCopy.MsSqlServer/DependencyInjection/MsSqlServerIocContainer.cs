@@ -6,7 +6,8 @@ using Loki.DbCopy.MsSqlServer.DatabaseCopyFunctions;
 using Loki.DbCopy.MsSqlServer.DatabaseCopyFunctions.Interfaces;
 using Loki.DbCopy.MsSqlServer.Factories;
 using Loki.MsSqlDbCopy.Infrastructure;
-using Loki.MsSqlDbCopy.Infrastructure.Interfaces;
+using Loki.MsSqlDbCopy.Infrastructure.Repositories;
+using Loki.MsSqlDbCopy.Infrastructure.Repositories.Interfaces;
 using Microsoft.Extensions.DependencyInjection;
 
 namespace Loki.DbCopy.MsSqlServer.DependencyInjection;

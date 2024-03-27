@@ -1,9 +1,8 @@
 ﻿using System.Data.SqlClient;
-using System.Text;
 using Dapper;
-using Loki.MsSqlDbCopy.Infrastructure.Interfaces;
+using Loki.MsSqlDbCopy.Infrastructure.Repositories.Interfaces;
 
-namespace Loki.MsSqlDbCopy.Infrastructure;
+namespace Loki.MsSqlDbCopy.Infrastructure.Repositories;
 
 public class MsSqlSchemasRepository : IMsSqlSchemasRepository
 {
@@ -30,9 +29,9 @@ public class MsSqlSchemasRepository : IMsSqlSchemasRepository
                         'guest',
                         'INFORMATION_SCHEMA'
                     );";
-        
+
         var sourceSchemas = await sqlConnection.QueryAsync<string>(retrieveSchemasSql);
-        
+
         return sourceSchemas?.ToArray() ?? Array.Empty<string>();
     }
 

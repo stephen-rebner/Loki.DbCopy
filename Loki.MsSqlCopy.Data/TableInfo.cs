@@ -3,4 +3,4 @@
 public record TableInfo(
     string SchemaName, 
     string TableName, 
-    string[] ColumnNames);
+    ColumnInfo[] Columns);

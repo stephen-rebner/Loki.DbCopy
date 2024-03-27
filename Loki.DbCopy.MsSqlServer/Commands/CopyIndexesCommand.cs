@@ -1,6 +1,6 @@
 ﻿using Loki.DbCopy.Core.Context;
 using Loki.DbCopy.MsSqlServer.Commands.Interfaces;
-using Loki.MsSqlDbCopy.Infrastructure.Interfaces;
+using Loki.MsSqlDbCopy.Infrastructure.Repositories.Interfaces;
 
 namespace Loki.DbCopy.MsSqlServer.Commands;
 
