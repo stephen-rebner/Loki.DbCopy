@@ -7,4 +7,6 @@ public record ColumnInfo
     public int? ColumnMaxLength { get; init; }
     public int? ColumnPrecision { get; init; }
     public int? ColumnScale { get; init; }
+    public bool IsNullable { get; init; }
+    public string DefaultValue { get; init; } = string.Empty;
 }

@@ -1,4 +1,7 @@
-﻿using Loki.DbCopy.IntegrationTests.BaseIntegrationTests;
+﻿using System.Data.SqlClient;
+using Dapper;
+using FluentAssertions;
+using Loki.DbCopy.IntegrationTests.BaseIntegrationTests;
 using Loki.DbCopy.MsSqlServer;
 using Microsoft.Extensions.DependencyInjection;
 
@@ -6,18 +9,50 @@ namespace Loki.DbCopy.IntegrationTests;
 
 public class MsSqlDbCopierTests : BaseMsSqlDbCopierIntegrationTests
 {
-    [Ignore("Not implemented yet")]
     [Test]
-    public async Task Copy_ShouldCopyAllDataFromAllDbTables()
+    public async Task Copy_CopysTheDatabase_WhenTheSourceAndDestinationConnectionStringsAreProvided()
     {
         // Arrange
-        var dbCopier = ServiceProvider.GetRequiredService<IMsSqlDbCopier>();
+        const string destinationDatabaseName = "NorthwindDBCopy";
+        
+        var sourceConnectionString = SourceNorthWindDbContainer.GetConnectionString();
+        var destinationConnectionString = DestinationNorthWindDbContainer.GetConnectionString();
+
+        var sourceConnectionStringBuilder = new SqlConnectionStringBuilder(sourceConnectionString)
+        {
+            InitialCatalog = "Northwind"
+        };
+
+        var destinationConnectionStringBuilder = new SqlConnectionStringBuilder(destinationConnectionString)
+        {
+            InitialCatalog = destinationDatabaseName
+        };
+        
+        var dbCopyOptions = new DbCopyOptions
+        {
+            DropAndRecreateDatabase = true,
+            CreateSchemas = false,
+            CopyData = false,
+            CopyStoredProcedures = false,
+            CopyFunctions = false,
+            CopyViews = false,
+            CopyTriggers = false,
+            CopyIndexes = false,
+            CopyPrimaryKeys = false,
+            CopyForeignKeys = false,
+            CopyTables = false
+        };
         
         // Act
-        await dbCopier.CopyDatabaseStructure("Server=localhost,1433;NorthwindDatabaseBackup=Northwind;User Id=sa;Password=Password123", "Server=localhost,1433;NorthwindDatabaseBackup=NorthwindCopy;User Id=sa;Password=Password123");
+        var databaseCopier = ServiceProvider.GetRequiredService<IMsSqlDbCopier>();
         
-        Assert.IsTrue(false);
+        await databaseCopier.Copy(sourceConnectionStringBuilder, destinationConnectionStringBuilder, dbCopyOptions);
+        
+        // Assert
+        await using var connection = new SqlConnection(destinationConnectionStringBuilder.ToString());
+        
+        var destinationDbCount = await connection.QueryFirstOrDefaultAsync<int>($"SELECT COUNT(*) FROM sys.databases WHERE name = '{destinationDatabaseName}'");
+
+        destinationDbCount.Should().Be(1);
     }
-    
-    
 }

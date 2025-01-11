@@ -1,82 +1,48 @@
-﻿using CommunityToolkit.Diagnostics;
+﻿using System.Data.SqlClient;
 using Loki.DbCopy.Core.Context;
 using Loki.DbCopy.MsSqlServer.DatabaseCopyFunctions.Interfaces;
+using Loki.DbCopy.MsSqlServer.Factories;
 
 namespace Loki.DbCopy.MsSqlServer;
 
 public class MsSqlDbCopier(
     IDbCopyContext dbCopyContext, 
-    IMsSqlDbStructureCopier msSqlDbStructureCopier, 
+    IMsSqlDbCopyCommandFactory msSqlDbCopyCommandFactory, 
     IMsSqlDbDataCopier msSqlDbDataCopier) : IMsSqlDbCopier
 {
-    public async Task CopyDatabaseStructure(string sourceConnectionString, string destinationConnectionString)
+    
+    public async Task Copy(SqlConnectionStringBuilder sourceConnectionString, SqlConnectionStringBuilder destinationConnectionString)
     {
-        await CopyDatabaseStructure(sourceConnectionString, destinationConnectionString, new DbCopyOptions());
+        await Copy(sourceConnectionString, destinationConnectionString, new DbCopyOptions());
     }
     
-    public async Task CopyDatabaseStructure(
-        string sourceConnectionString, 
-        string destinationConnectionString,
+    public async Task Copy(
+        SqlConnectionStringBuilder sourceConnectionString, 
+        SqlConnectionStringBuilder destinationConnectionString,
         DbCopyOptions dbCopyOptions)
     {
-        ValidateUserInput(sourceConnectionString, destinationConnectionString, dbCopyOptions);
+        try
+        {
+            dbCopyContext.SourceConnectionString = sourceConnectionString.ToString();
+            dbCopyContext.DestinationConnectionString = destinationConnectionString.ToString();
+            dbCopyContext.DbCopyOptions = dbCopyOptions;
         
-        dbCopyContext.SetSourceConnectionString(sourceConnectionString);
-        dbCopyContext.SetDestinationConnectionString(destinationConnectionString);
-        dbCopyContext.SetDbCopyOptions(dbCopyOptions);
+      
+            var dropDatabaseCommand = msSqlDbCopyCommandFactory.CreateDropDatabaseCommand();
+            var createDatabaseCommand = msSqlDbCopyCommandFactory.CreateCreateDatabaseCommand();
+            var copySchemasCommand = msSqlDbCopyCommandFactory.CreateCopySchemasCommand();
+            var copyTablesCommand = msSqlDbCopyCommandFactory.CreateCopyTablesCommand();
         
-        await msSqlDbStructureCopier.CopyDatabaseAndSchemas();
-        await msSqlDbStructureCopier.CopyDatabaseObjects();
+            await dropDatabaseCommand.Execute();
+            await createDatabaseCommand.Execute();
+            await copySchemasCommand.Execute();
+            await copyTablesCommand.Execute();
 
-    }
-    
-    public async Task CopyDatabaseData(string sourceConnectionString, string destinationConnectionString)
-    {
-        await CopyDatabaseData(sourceConnectionString, destinationConnectionString, new DbCopyOptions());
-    }
-    
-    public async Task CopyDatabaseData(
-        string sourceConnectionString, 
-        string destinationConnectionString,
-        DbCopyOptions dbCopyOptions)
-    {
-        ValidateUserInput(sourceConnectionString, destinationConnectionString, dbCopyOptions);
-        
-        dbCopyContext.SetSourceConnectionString(sourceConnectionString);
-        dbCopyContext.SetDestinationConnectionString(destinationConnectionString);
-        dbCopyContext.SetDbCopyOptions(dbCopyOptions);
-
-        // todo: disable primary keys, foreign keys, indexes, triggers, etc.
-        
-        await msSqlDbDataCopier.CopyDatabaseData(); 
-    }
-    
-    public async Task CopyDatabase(string sourceConnectionString, string destinationConnectionString)
-    {
-        await CopyDatabase(sourceConnectionString, destinationConnectionString, new DbCopyOptions());
-    }
-    
-    public async Task CopyDatabase(
-        string sourceConnectionString, 
-        string destinationConnectionString,
-        DbCopyOptions dbCopyOptions)
-    {
-        ValidateUserInput(sourceConnectionString, destinationConnectionString, dbCopyOptions);
-
-        dbCopyContext.SetSourceConnectionString(sourceConnectionString);
-        dbCopyContext.SetDestinationConnectionString(destinationConnectionString);
-        dbCopyContext.SetDbCopyOptions(dbCopyOptions);
-
-        await msSqlDbStructureCopier.CopyDatabaseAndSchemas();
-        await msSqlDbDataCopier.CopyDatabaseData();
-        await msSqlDbStructureCopier.CopyDatabaseObjects();
-    }
-
-    private static void ValidateUserInput(string sourceConnectionString, string destinationConnectionString,
-        DbCopyOptions dbCopyOptions)
-    {
-        Guard.IsNotNullOrEmpty(sourceConnectionString);
-        Guard.IsNotNullOrEmpty(destinationConnectionString);
-        Guard.IsNotNull(dbCopyOptions);
+        }
+        catch (Exception e)
+        {
+            Console.WriteLine(e);
+            throw;
+        }
     }
 }

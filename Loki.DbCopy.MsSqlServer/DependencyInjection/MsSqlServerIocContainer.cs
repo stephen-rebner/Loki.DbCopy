@@ -34,6 +34,13 @@ public static class MsSqlServerIocContainer
         services.AddScoped<IDatabaseCopyCommand, CopyFunctionsCommand>();
         services.AddScoped<IDatabaseCopyCommand, CopyTriggersCommand>();
         
+        // Register the IMsSqlTablesRepository and MsSqlTablesRepository classes
+        services.AddScoped<IMsSqlTablesRepository, MsSqlTablesRepository>();
+
+        services.AddScoped<IMsSqlSchemasRepository, MsSqlSchemasRepository>();
+
+        services.AddScoped<IIndexesRepository, IndexesRepository>();
+        
         // Register the Loki.MsSqlDbCopy.Infrastructure classes
         services.AddScoped<IMsSqlSchemasRepository, MsSqlSchemasRepository>();
         

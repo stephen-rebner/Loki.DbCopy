@@ -1,7 +1,6 @@
 ﻿using System.Data.SqlClient;
 using Dapper;
 using FluentAssertions;
-using Loki.DbCopy.Core;
 using Loki.DbCopy.IntegrationTests.BaseIntegrationTests;
 using Loki.DbCopy.MsSqlServer;
 using Microsoft.Extensions.DependencyInjection;
@@ -10,6 +9,7 @@ namespace Loki.DbCopy.IntegrationTests.Commands;
 
 public class CopySchemasCommandTests : BaseMsSqlDbCopierIntegrationTests
 {
+    // use this test as a template for all other integration tests
     [Test]
     public async Task Execute_CopiesAllCustomSchemasFromTheSourceDatabase_WhenTheCreateSchemasOptionIsSetToTrue()
     {
@@ -17,24 +17,37 @@ public class CopySchemasCommandTests : BaseMsSqlDbCopierIntegrationTests
         const string Schema2 = "Schema2";
         
         // Arrange
+        
         const string destinationDatabaseName = "NorthwindDBCopy";
         
         var dbCopyOptions = new DbCopyOptions
         {
             DropAndRecreateDatabase = true,
             // Ensure that we create the schemas
-            CreateSchemas = true
+            CreateSchemas = true,
+            CopyData = false,
+            CopyStoredProcedures = false,
+            CopyFunctions = false,
+            CopyViews = false,
+            CopyTriggers = false,
+            CopyIndexes = false,
+            CopyPrimaryKeys = false,
+            CopyForeignKeys = false,
+            CopyTables = false
         };
 
-        var sourceConnectionString = SourceNorthWindDbContainer.GetConnectionString();
+        var sourceConnectionString = new SqlConnectionStringBuilder(SourceNorthWindDbContainer.GetConnectionString())
+        {
+            InitialCatalog = "Northwind"
+        };
         
-        var destinationConnectionString = @$"Server={DestinationNorthWindDbContainer.Hostname},{DestinationNorthWindDbContainer.GetMappedPublicPort(1433)};
-                        Database={destinationDatabaseName};
-                        User Id={UserId};
-                        Password={Password}";
+        var destinationConnectionString = new SqlConnectionStringBuilder(DestinationNorthWindDbContainer.GetConnectionString())
+        {
+            InitialCatalog = destinationDatabaseName
+        };
         
         // create 2 schemas in the source database
-        await using (var sourceDbConnection = new SqlConnection(sourceConnectionString))
+        await using (var sourceDbConnection = new SqlConnection(sourceConnectionString.ToString()))
         {
             await sourceDbConnection.OpenAsync();
 
@@ -46,12 +59,12 @@ public class CopySchemasCommandTests : BaseMsSqlDbCopierIntegrationTests
         // Act
         var databaseCopier = ServiceProvider.GetRequiredService<IMsSqlDbCopier>();
 
-        await databaseCopier.CopyDatabaseStructure(sourceConnectionString, destinationConnectionString, dbCopyOptions);
+        await databaseCopier.Copy(sourceConnectionString, destinationConnectionString, dbCopyOptions);
 
         // Assert
          
         // create a connection to the destination database
-        await using (var destinationDbConnection = new SqlConnection(destinationConnectionString))
+        await using (var destinationDbConnection = new SqlConnection(destinationConnectionString.ToString()))
         {
             var expectedSchemaNames = new [] { Schema1, Schema2 };
             

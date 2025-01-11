@@ -4,15 +4,9 @@ namespace Loki.DbCopy.Core.Context;
 
 public interface IDbCopyContext
 {
-    string SourceConnectionString { get;  }
+    string SourceConnectionString { get; set; }
     
-    string DestinationConnectionString { get;  }
+    string DestinationConnectionString { get; set; }
     
-    DbCopyOptions DbCopyOptions { get; }
-    
-    void SetSourceConnectionString(string sourceConnectionString);
-    
-    void SetDestinationConnectionString(string destinationConnectionString);
-    
-    void SetDbCopyOptions(DbCopyOptions dbCopyOptions);
+    DbCopyOptions DbCopyOptions { get; set; }
 }

@@ -1,4 +1,6 @@
-﻿using Loki.DbCopy.MsSqlServer.DependencyInjection;
+﻿using System.Data.SqlClient;
+using Dapper;
+using Loki.DbCopy.MsSqlServer.DependencyInjection;
 using Microsoft.Extensions.DependencyInjection;
 using Testcontainers.MsSql;
 
@@ -62,7 +64,7 @@ public abstract class BaseMsSqlDbCopierIntegrationTests
         // create a sql server container
         SourceNorthWindDbContainer = new MsSqlBuilder()
             .WithPassword(Password)
-            // .WithPortBinding(1433, 1433)
+            .WithPortBinding(1433, 1433)
             .WithWorkingDirectory("/var/opt/mssql")
             .WithImage("mcr.microsoft.com/mssql/server:2022-latest")
             .Build();
@@ -73,5 +75,13 @@ public abstract class BaseMsSqlDbCopierIntegrationTests
         var northwindDbBackupFile = new FileInfo("./NorthwindDatabaseBackup/Northwind.bak");
         
         await SourceNorthWindDbContainer.CopyAsync(northwindDbBackupFile, "/var/opt/mssql/data/");
+        
+        // restore the northwind database
+        await using var connection = new SqlConnection(SourceNorthWindDbContainer.GetConnectionString());
+        
+        await connection.OpenAsync();
+        
+        await connection.ExecuteAsync("RESTORE DATABASE Northwind FROM DISK = '/var/opt/mssql/data/Northwind.bak' WITH MOVE 'Northwind' TO '/var/opt/mssql/data/Northwind.mdf', MOVE 'Northwind_log' TO '/var/opt/mssql/data/Northwind_log.ldf'");
+        
     }
 }

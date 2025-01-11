@@ -23,14 +23,13 @@ public class CreateDatabaseCommandTests : BaseMsSqlDbCopierIntegrationTests
         // Ensure that we drop and recreate the database
         dbCopyContext.DbCopyOptions.DropAndRecreateDatabase = true;
 
-        dbCopyContext.SetSourceConnectionString(SourceNorthWindDbContainer.GetConnectionString());
+        dbCopyContext.SourceConnectionString = SourceNorthWindDbContainer.GetConnectionString();
 
         // Act
-        dbCopyContext.SetDestinationConnectionString(
-            @$"Server={DestinationNorthWindDbContainer.Hostname},{DestinationNorthWindDbContainer.GetMappedPublicPort(1433)};
+        dbCopyContext.DestinationConnectionString = @$"Server={DestinationNorthWindDbContainer.Hostname},{DestinationNorthWindDbContainer.GetMappedPublicPort(1433)};
                         Database={destinationDatabaseName};
                         User Id={UserId};
-                        Password={Password}");
+                        Password={Password}";
         
         var createDatabaseIfExistsCommand = ServiceProvider
             .GetServices<IDatabaseCopyCommand>()

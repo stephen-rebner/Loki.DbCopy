@@ -23,9 +23,9 @@ public class DropDatabaseCommandTests : BaseMsSqlDbCopierIntegrationTests
         // Ensure that we drop and recreate the database
         dbCopyContext.DbCopyOptions.DropAndRecreateDatabase = true;
 
-        dbCopyContext.SetSourceConnectionString(SourceNorthWindDbContainer.GetConnectionString());
+        dbCopyContext.SourceConnectionString = SourceNorthWindDbContainer.GetConnectionString();
 
-        dbCopyContext.SetDestinationConnectionString(DestinationNorthWindDbContainer.GetConnectionString());
+        dbCopyContext.DestinationConnectionString = DestinationNorthWindDbContainer.GetConnectionString();
         
         // Create an empty destination database to be dropped
         await using var connection = new SqlConnection(dbCopyContext.DestinationConnectionString);
@@ -35,11 +35,11 @@ public class DropDatabaseCommandTests : BaseMsSqlDbCopierIntegrationTests
         await connection.ExecuteAsync($"CREATE DATABASE {destinationDatabaseName}");
         
         // Act
-        dbCopyContext.SetDestinationConnectionString(
+        dbCopyContext.DestinationConnectionString = 
                         @$"Server={DestinationNorthWindDbContainer.Hostname},{DestinationNorthWindDbContainer.GetMappedPublicPort(1433)};
                         Database={destinationDatabaseName};
                         User Id={UserId};
-                        Password={Password}");
+                        Password={Password}";
         
         var dropDatabaseIfExistsCommand = ServiceProvider
             .GetServices<IDatabaseCopyCommand>()
@@ -64,9 +64,9 @@ public class DropDatabaseCommandTests : BaseMsSqlDbCopierIntegrationTests
         // Ensure that we drop and recreate the database
         dbCopyContext.DbCopyOptions.DropAndRecreateDatabase = false;
 
-        dbCopyContext.SetSourceConnectionString(SourceNorthWindDbContainer.GetConnectionString());
+        dbCopyContext.SourceConnectionString = SourceNorthWindDbContainer.GetConnectionString();
 
-        dbCopyContext.SetDestinationConnectionString(DestinationNorthWindDbContainer.GetConnectionString());
+        dbCopyContext.DestinationConnectionString = DestinationNorthWindDbContainer.GetConnectionString();
         
         // Create an empty destination database to be dropped
         await using var connection = new SqlConnection(dbCopyContext.DestinationConnectionString);
@@ -76,11 +76,11 @@ public class DropDatabaseCommandTests : BaseMsSqlDbCopierIntegrationTests
         await connection.ExecuteAsync($"CREATE DATABASE {destinationDatabaseName}");
         
         // Act
-        dbCopyContext.SetDestinationConnectionString(
+        dbCopyContext.DestinationConnectionString = 
                         @$"Server={DestinationNorthWindDbContainer.Hostname},{DestinationNorthWindDbContainer.GetMappedPublicPort(1433)};
                         Database={destinationDatabaseName};
                         User Id={UserId};
-                        Password={Password}");
+                        Password={Password}";
         
         var dropDatabaseIfExistsCommand = ServiceProvider
             .GetServices<IDatabaseCopyCommand>()

@@ -15,6 +15,8 @@ public class DbCopyOptions
     // public bool CopyUsers { get; set; } = false;
     // public bool CopyRoles { get; set; } = false;
     // public bool CopyLogins { get; set; } = false;
+    public bool CopyTables { get; set; }
+
     // public bool CopyPermissions { get; set; } = false;
 
     public string[] ExcludedTables { get; set; } = Array.Empty<string>();
