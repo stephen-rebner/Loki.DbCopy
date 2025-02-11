@@ -8,30 +8,27 @@ public class CreateTableSqlBuilder(TableInfo tableInfo)
     public string Build()
     {
         var sqlBuilder = new StringBuilder();
-        sqlBuilder.AppendLine($"CREATE TABLE {tableInfo.SchemaName}.{tableInfo.TableName} (");
+        sqlBuilder.AppendLine($"CREATE TABLE [{tableInfo.SchemaName}].[{tableInfo.TableName}] (");
 
         foreach (var column in tableInfo.Columns)
         {
-            sqlBuilder.Append($"{column.ColumnName} {column.ColumnType}");
-
-            if (IsTextField(column.ColumnType) && column.ColumnMaxLength.HasValue)
-            {
-                sqlBuilder.Append($"({column.ColumnMaxLength.Value})");
-            }
+            sqlBuilder.Append($"[{column.ColumnName}] ");
+            sqlBuilder.Append('['); // open square bracket to escape column names
+            sqlBuilder.Append($"{column.ColumnType}");
             
             if (column is { ColumnPrecision: not null, ColumnScale: not null, ColumnType: "decimal" })
             {
                 sqlBuilder.Append($"({column.ColumnPrecision.Value}, {column.ColumnScale.Value})");
             }
 
-            if (column.IsNullable)
+            sqlBuilder.Append(']'); // close square bracket to escape column names
+            
+            if (IsTextFieldWithMaxLength(column.ColumnType) && column.ColumnMaxLength.HasValue)
             {
-                sqlBuilder.Append(" NULL");
+                sqlBuilder.Append($"({column.ColumnMaxLength.Value})");
             }
-            else
-            {
-                sqlBuilder.Append(" NOT NULL");
-            }
+
+            sqlBuilder.Append(column.IsNullable ? " NULL" : " NOT NULL");
 
             if (!string.IsNullOrWhiteSpace(column.DefaultValue))
             {
@@ -48,8 +45,8 @@ public class CreateTableSqlBuilder(TableInfo tableInfo)
         return sqlBuilder.ToString();
     }
 
-    private static bool IsTextField(string columnType)
+    private static bool IsTextFieldWithMaxLength(string columnType)
     {
-        return columnType is "char" or "varchar" or "text" or "nchar" or "nvarchar" or "ntext";
+        return columnType is "char" or "varchar" or "text" or "nchar" or "nvarchar";
     }
 }

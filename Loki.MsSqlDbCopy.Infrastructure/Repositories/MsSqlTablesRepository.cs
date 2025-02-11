@@ -42,12 +42,14 @@ public class MsSqlTablesRepository : IMsSqlTablesRepository
             sql,
             (table, column) =>
             {
-                if (!tableDictionary.TryGetValue(table.TableName, out var currentTable))
+                if (!tableDictionary.TryGetValue(table.TableName, out var existingTable))
                 {
-                    tableDictionary.Add(table.TableName, table);
+                    var tableInfo = new TableInfo(table.SchemaName, table.TableName);
+                    tableDictionary.Add(table.TableName, tableInfo);
+                    existingTable = tableInfo;
                 }
-                table.Columns.Add(column);
-                return table;
+                existingTable.Columns.Add(column);
+                return existingTable;
             },
             splitOn: "ColumnName"
         );
