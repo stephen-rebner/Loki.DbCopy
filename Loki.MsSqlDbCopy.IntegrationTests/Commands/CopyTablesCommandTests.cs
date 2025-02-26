@@ -11,15 +11,13 @@ public class CopyTablesCommandTests : BaseMsSqlDbCopierIntegrationTests
 {
     
     [Test]
-    public async Task Execute_CopiesAllDatabaseTables()
+    public async Task Execute_CopiesAllDatabaseTables_WhenCopyTablesIsSetToTrue()
     {
         // Arrange
         const string destinationDatabaseName = "NorthwindDBCopy";
         
         var dbCopyOptions = new DbCopyOptions
         {
-            DropAndRecreateDatabase = true,
-            CreateSchemas = true,
             CopyData = false,
             CopyStoredProcedures = false,
             CopyFunctions = false,
@@ -28,7 +26,7 @@ public class CopyTablesCommandTests : BaseMsSqlDbCopierIntegrationTests
             CopyIndexes = false,
             CopyPrimaryKeys = false,
             CopyForeignKeys = false,
-            CopyTables = true
+            CopyTables = true // set to true to copy tables
         };
         
         // use the SqlConnectionStringBuilder to build connection string
@@ -61,15 +59,13 @@ public class CopyTablesCommandTests : BaseMsSqlDbCopierIntegrationTests
     }
     
     [Test]
-    public async Task Execute_CopiesAllDatabaseTablesColumns()
+    public async Task Execute_CopiesAllDatabaseTablesColumns_WhenCopyTablesIsTrue()
     {
         // Arrange
         const string destinationDatabaseName = "NorthwindDBCopy";
         
         var dbCopyOptions = new DbCopyOptions
         {
-            DropAndRecreateDatabase = true,
-            CreateSchemas = true,
             CopyData = false,
             CopyStoredProcedures = false,
             CopyFunctions = false,
@@ -78,7 +74,7 @@ public class CopyTablesCommandTests : BaseMsSqlDbCopierIntegrationTests
             CopyIndexes = false,
             CopyPrimaryKeys = false,
             CopyForeignKeys = false,
-            CopyTables = true
+            CopyTables = true // set to true to copy tables
         };
         
         // use the SqlConnectionStringBuilder to build connection string
@@ -110,6 +106,54 @@ public class CopyTablesCommandTests : BaseMsSqlDbCopierIntegrationTests
             var destinationTableColumns = await destinationConnection.QueryAsync(getSourceTableColumnsSql);
             
             destinationTableColumns.Should().BeEquivalentTo(sourceTableColumns);
+        };
+    }
+    
+    // add a test to check that no tables are copied when CopyTables is set to false
+    [Test]
+    public async Task Execute_DoesNotCopyAnyTables_WhenCopyTablesIsSetToFalse()
+    {
+        // Arrange
+        const string destinationDatabaseName = "NorthwindDBCopy";
+        
+        var dbCopyOptions = new DbCopyOptions
+        {
+            CopyData = false,
+            CopyStoredProcedures = false,
+            CopyFunctions = false,
+            CopyViews = false,
+            CopyTriggers = false,
+            CopyIndexes = false,
+            CopyPrimaryKeys = false,
+            CopyForeignKeys = false,
+            CopyTables = false // set to false to not copy tables
+        };
+        
+        // use the SqlConnectionStringBuilder to build connection string
+        var sourceConnectionStringBuilder = new SqlConnectionStringBuilder(SourceNorthWindDbContainer.GetConnectionString())
+        {
+            InitialCatalog = "Northwind"
+        };
+
+        var destinationConnectionStringBuilder = new SqlConnectionStringBuilder(DestinationNorthWindDbContainer.GetConnectionString())
+        {
+            InitialCatalog = destinationDatabaseName
+        };
+
+        var msSqlDbCopier = ServiceProvider.GetService<IMsSqlDbCopier>();
+        
+        // Act
+        await msSqlDbCopier.Copy(sourceConnectionStringBuilder, destinationConnectionStringBuilder, dbCopyOptions);
+        
+        // Assert
+        await using var sourceConnection = new SqlConnection(sourceConnectionStringBuilder.ToString());
+        await using (var destinationConnection = new SqlConnection(destinationConnectionStringBuilder.ToString()))
+        {
+            var getTableCountSql = "SELECT COUNT(*) FROM INFORMATION_SCHEMA.TABLES WHERE TABLE_TYPE = 'BASE TABLE'";
+
+            var destinationTableCount = await destinationConnection.QueryFirstOrDefaultAsync<int>(getTableCountSql);
+            
+            destinationTableCount.Should().Be(0);
         };
     }
 }
