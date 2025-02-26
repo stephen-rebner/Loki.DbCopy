@@ -3,6 +3,7 @@ using Dapper;
 using FluentAssertions;
 using Loki.DbCopy.IntegrationTests.BaseIntegrationTests;
 using Loki.DbCopy.MsSqlServer;
+using Loki.DbCopy.MsSqlServer.Context;
 using Loki.MsSqlCopy.Common.Context;
 using Microsoft.Extensions.DependencyInjection;
 

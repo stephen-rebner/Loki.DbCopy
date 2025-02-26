@@ -4,6 +4,7 @@ using FluentAssertions;
 using Loki.DbCopy.IntegrationTests.BaseIntegrationTests;
 using Loki.DbCopy.MsSqlServer.Commands;
 using Loki.DbCopy.MsSqlServer.Commands.Interfaces;
+using Loki.DbCopy.MsSqlServer.Context;
 using Loki.MsSqlCopy.Common.Context;
 using Microsoft.Extensions.DependencyInjection;
 

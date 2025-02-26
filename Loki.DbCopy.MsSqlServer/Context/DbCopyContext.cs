@@ -1,4 +1,4 @@
-﻿namespace Loki.MsSqlCopy.Common.Context;
+﻿namespace Loki.DbCopy.MsSqlServer.Context;
 
 public class DbCopyContext : IDbCopyContext
 {
