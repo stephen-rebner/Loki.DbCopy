@@ -12,7 +12,7 @@
     </ItemGroup>
 
     <ItemGroup>
-      <ProjectReference Include="..\Loki.MsSqlCopy.Data\Loki.MsSqlCopy.Data.csproj" />
+      <ProjectReference Include="..\Loki.MsSqlCopy.Common\Loki.MsSqlCopy.Common.csproj" />
     </ItemGroup>
 
 </Project>

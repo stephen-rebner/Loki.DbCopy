@@ -1,5 +1,5 @@
 ﻿using System.Text;
-using Loki.MsSqlCopy.Data;
+using Loki.MsSqlCopy.Common;
 
 namespace Loki.MsSqlDbCopy.Infrastructure.SqlBuilders;
 

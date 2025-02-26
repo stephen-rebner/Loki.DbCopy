@@ -1,12 +1,13 @@
 ﻿using System.Data.SqlClient;
-using Loki.DbCopy.Core.Context;
 using Loki.DbCopy.MsSqlServer.DatabaseCopyFunctions.Interfaces;
 using Loki.DbCopy.MsSqlServer.Factories;
+using Loki.MsSqlCopy.Common.Context;
 
 namespace Loki.DbCopy.MsSqlServer;
 
 public class MsSqlDbCopier(
     IDbCopyContext dbCopyContext, 
+    IConnectionStringContext connectionStringContext,
     IMsSqlDbCopyCommandFactory msSqlDbCopyCommandFactory, 
     IMsSqlDbDataCopier msSqlDbDataCopier) : IMsSqlDbCopier
 {
@@ -23,8 +24,8 @@ public class MsSqlDbCopier(
     {
         try
         {
-            dbCopyContext.SourceConnectionString = sourceConnectionString.ToString();
-            dbCopyContext.DestinationConnectionString = destinationConnectionString.ToString();
+            connectionStringContext.SourceConnectionString = sourceConnectionString.ToString();
+            connectionStringContext.DestinationConnectionString = destinationConnectionString.ToString();
             dbCopyContext.DbCopyOptions = dbCopyOptions;
         
       

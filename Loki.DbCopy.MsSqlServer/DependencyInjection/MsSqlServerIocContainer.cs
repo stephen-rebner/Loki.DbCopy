@@ -1,11 +1,9 @@
-﻿using Loki.DbCopy.Core.Context;
-using Loki.DbCopy.MsSqlServer.Commands;
+﻿using Loki.DbCopy.MsSqlServer.Commands;
 using Loki.DbCopy.MsSqlServer.Commands.Interfaces;
-using Loki.DbCopy.MsSqlServer.Context;
 using Loki.DbCopy.MsSqlServer.DatabaseCopyFunctions;
 using Loki.DbCopy.MsSqlServer.DatabaseCopyFunctions.Interfaces;
 using Loki.DbCopy.MsSqlServer.Factories;
-using Loki.MsSqlDbCopy.Infrastructure;
+using Loki.MsSqlCopy.Common.Context;
 using Loki.MsSqlDbCopy.Infrastructure.Repositories;
 using Loki.MsSqlDbCopy.Infrastructure.Repositories.Interfaces;
 using Microsoft.Extensions.DependencyInjection;
@@ -19,6 +17,7 @@ public static class MsSqlServerIocContainer
     {
         // Register the IDbCopyContext and DbCopyContext classes
         services.AddSingleton<IDbCopyContext, DbCopyContext>();
+        services.AddSingleton<IConnectionStringContext, ConnectionStringContext>();
         
         // Register the IDatabaseCopyCommand classes
         services.AddScoped<IDatabaseCopyCommand, DropDatabaseCommand>();

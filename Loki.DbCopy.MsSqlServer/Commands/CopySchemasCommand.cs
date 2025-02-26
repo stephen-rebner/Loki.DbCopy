@@ -1,5 +1,5 @@
-﻿using Loki.DbCopy.Core.Context;
-using Loki.DbCopy.MsSqlServer.Commands.Interfaces;
+﻿using Loki.DbCopy.MsSqlServer.Commands.Interfaces;
+using Loki.MsSqlCopy.Common.Context;
 using Loki.MsSqlDbCopy.Infrastructure.Repositories.Interfaces;
 
 namespace Loki.DbCopy.MsSqlServer.Commands;
@@ -21,11 +21,11 @@ internal class CopySchemasCommand(IDbCopyContext dbCopyContext, IMsSqlSchemasRep
             return;
         }
         
-        var schemaNames = await msSqlSchemasRepository.LoadSchemas(dbCopyContext.SourceConnectionString);
+        var schemaNames = await msSqlSchemasRepository.LoadSchemas();
 
         if (schemaNames.Length > 0)
         {
-            await msSqlSchemasRepository.CreateSchemas(dbCopyContext.DestinationConnectionString, schemaNames);
+            await msSqlSchemasRepository.CreateSchemas(schemaNames);
         }
     }
 }

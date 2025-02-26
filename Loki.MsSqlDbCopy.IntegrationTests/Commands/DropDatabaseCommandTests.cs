@@ -1,10 +1,10 @@
 ﻿using System.Data.SqlClient;
 using Dapper;
 using FluentAssertions;
-using Loki.DbCopy.Core.Context;
 using Loki.DbCopy.IntegrationTests.BaseIntegrationTests;
 using Loki.DbCopy.MsSqlServer.Commands;
 using Loki.DbCopy.MsSqlServer.Commands.Interfaces;
+using Loki.MsSqlCopy.Common.Context;
 using Microsoft.Extensions.DependencyInjection;
 
 namespace Loki.DbCopy.IntegrationTests.Commands;
@@ -19,23 +19,24 @@ public class DropDatabaseCommandTests : BaseMsSqlDbCopierIntegrationTests
         const string destinationDatabaseName = "NorthwindDBCopy";
         
         var dbCopyContext = ServiceProvider.GetRequiredService<IDbCopyContext>();
+        var connectionStringContext = ServiceProvider.GetRequiredService<IConnectionStringContext>();
         
         // Ensure that we drop and recreate the database
         dbCopyContext.DbCopyOptions.DropAndRecreateDatabase = true;
 
-        dbCopyContext.SourceConnectionString = SourceNorthWindDbContainer.GetConnectionString();
+        connectionStringContext.SourceConnectionString = SourceNorthWindDbContainer.GetConnectionString();
 
-        dbCopyContext.DestinationConnectionString = DestinationNorthWindDbContainer.GetConnectionString();
+        connectionStringContext.DestinationConnectionString = DestinationNorthWindDbContainer.GetConnectionString();
         
         // Create an empty destination database to be dropped
-        await using var connection = new SqlConnection(dbCopyContext.DestinationConnectionString);
+        await using var connection = new SqlConnection(connectionStringContext.DestinationConnectionString);
 
         await connection.OpenAsync();
         
         await connection.ExecuteAsync($"CREATE DATABASE {destinationDatabaseName}");
         
         // Act
-        dbCopyContext.DestinationConnectionString = 
+        connectionStringContext.DestinationConnectionString = 
                         @$"Server={DestinationNorthWindDbContainer.Hostname},{DestinationNorthWindDbContainer.GetMappedPublicPort(1433)};
                         Database={destinationDatabaseName};
                         User Id={UserId};
@@ -60,23 +61,24 @@ public class DropDatabaseCommandTests : BaseMsSqlDbCopierIntegrationTests
         const string destinationDatabaseName = "NorthwindDBCopy";
         
         var dbCopyContext = ServiceProvider.GetRequiredService<IDbCopyContext>();
+        var connectionStringContext = ServiceProvider.GetRequiredService<IConnectionStringContext>();
         
         // Ensure that we drop and recreate the database
         dbCopyContext.DbCopyOptions.DropAndRecreateDatabase = false;
 
-        dbCopyContext.SourceConnectionString = SourceNorthWindDbContainer.GetConnectionString();
+        connectionStringContext.SourceConnectionString = SourceNorthWindDbContainer.GetConnectionString();
 
-        dbCopyContext.DestinationConnectionString = DestinationNorthWindDbContainer.GetConnectionString();
+        connectionStringContext.DestinationConnectionString = DestinationNorthWindDbContainer.GetConnectionString();
         
         // Create an empty destination database to be dropped
-        await using var connection = new SqlConnection(dbCopyContext.DestinationConnectionString);
+        await using var connection = new SqlConnection(connectionStringContext.DestinationConnectionString);
 
         await connection.OpenAsync();
         
         await connection.ExecuteAsync($"CREATE DATABASE {destinationDatabaseName}");
         
         // Act
-        dbCopyContext.DestinationConnectionString = 
+        connectionStringContext.DestinationConnectionString = 
                         @$"Server={DestinationNorthWindDbContainer.Hostname},{DestinationNorthWindDbContainer.GetMappedPublicPort(1433)};
                         Database={destinationDatabaseName};
                         User Id={UserId};

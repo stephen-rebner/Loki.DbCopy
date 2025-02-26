@@ -1,16 +1,17 @@
 ﻿using System.Data.SqlClient;
 using Dapper;
-using Loki.MsSqlCopy.Data;
+using Loki.MsSqlCopy.Common;
+using Loki.MsSqlCopy.Common.Context;
 using Loki.MsSqlDbCopy.Infrastructure.Repositories.Interfaces;
 using Loki.MsSqlDbCopy.Infrastructure.SqlBuilders;
 
 namespace Loki.MsSqlDbCopy.Infrastructure.Repositories;
 
-public class MsSqlTablesRepository : IMsSqlTablesRepository
+public class MsSqlTablesRepository(IConnectionStringContext connectionStringContext) : IMsSqlTablesRepository
 {
-    public async Task<TableInfo[]> GetTablesAsync(string connectionString)
+    public async Task<TableInfo[]> GetTablesAsync()
     {
-        await using var sqlConnection = new SqlConnection(connectionString);
+        await using var sqlConnection = new SqlConnection(connectionStringContext.SourceConnectionString);
 
         var sql = @"
         SELECT
@@ -57,13 +58,13 @@ public class MsSqlTablesRepository : IMsSqlTablesRepository
         return tableDictionary.Values.ToArray();
     }
 
-    public async Task SaveTableAsync(string connectionString, TableInfo tableInfo)
+    public async Task SaveTableAsync(TableInfo tableInfo)
     {
         var createTableSqlBuilder = new CreateTableSqlBuilder(tableInfo);
         
         var createTableSql = createTableSqlBuilder.Build();
         
-        await using var sqlConnection = new SqlConnection(connectionString);
+        await using var sqlConnection = new SqlConnection(connectionStringContext.DestinationConnectionString);
         
         await sqlConnection.ExecuteAsync(createTableSql);
         

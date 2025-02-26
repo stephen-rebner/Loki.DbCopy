@@ -1,14 +1,15 @@
 ﻿using System.Data.SqlClient;
 using Dapper;
+using Loki.MsSqlCopy.Common.Context;
 using Loki.MsSqlDbCopy.Infrastructure.Repositories.Interfaces;
 
 namespace Loki.MsSqlDbCopy.Infrastructure.Repositories;
 
-public class MsSqlSchemasRepository : IMsSqlSchemasRepository
+public class MsSqlSchemasRepository(IConnectionStringContext connectionStringContext) : IMsSqlSchemasRepository
 {
-    public async Task<string[]> LoadSchemas(string connectionString)
+    public async Task<string[]> LoadSchemas()
     {
-        await using var sqlConnection = new SqlConnection(connectionString);
+        await using var sqlConnection = new SqlConnection(connectionStringContext.SourceConnectionString);
 
         // Query to get all schemas
         var retrieveSchemasSql = @"SELECT name AS SchemaName
@@ -35,9 +36,9 @@ public class MsSqlSchemasRepository : IMsSqlSchemasRepository
         return sourceSchemas?.ToArray() ?? Array.Empty<string>();
     }
 
-    public async Task CreateSchemas(string connectionString, string[] schemaNames)
+    public async Task CreateSchemas(string[] schemaNames)
     {
-        await using var sqlConnection = new SqlConnection(connectionString);
+        await using var sqlConnection = new SqlConnection(connectionStringContext.DestinationConnectionString);
         await sqlConnection.OpenAsync();
 
         foreach (var schemaName in schemaNames)

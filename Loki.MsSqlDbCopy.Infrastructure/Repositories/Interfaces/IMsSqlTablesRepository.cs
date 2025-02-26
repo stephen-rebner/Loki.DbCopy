@@ -1,10 +1,10 @@
-﻿using Loki.MsSqlCopy.Data;
+﻿using Loki.MsSqlCopy.Common;
 
 namespace Loki.MsSqlDbCopy.Infrastructure.Repositories.Interfaces;
 
 public interface IMsSqlTablesRepository
 {
-    Task<TableInfo[]> GetTablesAsync(string connectionString);
+    Task<TableInfo[]> GetTablesAsync();
     
-    Task SaveTableAsync(string connectionString, TableInfo tableInfo);
+    Task SaveTableAsync(TableInfo tableInfo);
 }

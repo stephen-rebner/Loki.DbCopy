@@ -1,4 +1,4 @@
-﻿namespace Loki.MsSqlCopy.Data;
+﻿namespace Loki.MsSqlCopy.Common;
 
 public record TableInfo
 {

@@ -2,7 +2,7 @@
 
 public interface IMsSqlSchemasRepository
 {
-    Task<string[]> LoadSchemas(string connectionString);
+    Task<string[]> LoadSchemas();
     
-    Task CreateSchemas(string connectionString, string[] schemaNames);
+    Task CreateSchemas(string[] schemaNames);
 }

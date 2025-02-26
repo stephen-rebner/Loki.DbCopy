@@ -1,14 +1,14 @@
 ﻿using System.Data.SqlClient;
 using Dapper;
-using Loki.DbCopy.Core.Context;
 using Loki.DbCopy.MsSqlServer.Commands.Interfaces;
+using Loki.MsSqlCopy.Common.Context;
 
 namespace Loki.DbCopy.MsSqlServer.Commands;
 
 /// <summary>
 /// MsSqlServer command responsible for dropping the destination database if it exists.
 /// </summary>
-internal class DropDatabaseCommand(IDbCopyContext dbCopyContext) : IDatabaseCopyCommand
+internal class DropDatabaseCommand(IDbCopyContext dbCopyContext, IConnectionStringContext connectionStringContext) : IDatabaseCopyCommand
 {
     /// <summary>
     /// Drops the database if the DropAndRecreateDatabase option is set to true.
@@ -18,10 +18,10 @@ internal class DropDatabaseCommand(IDbCopyContext dbCopyContext) : IDatabaseCopy
     {
         if (dbCopyContext.DbCopyOptions.DropAndRecreateDatabase)
         {
-            var databaseToDropName = new SqlConnectionStringBuilder(dbCopyContext.DestinationConnectionString)
+            var databaseToDropName = new SqlConnectionStringBuilder(connectionStringContext.DestinationConnectionString)
                 .InitialCatalog;
             
-            var masterConnectionStringBuilder = new SqlConnectionStringBuilder(dbCopyContext.DestinationConnectionString)
+            var masterConnectionStringBuilder = new SqlConnectionStringBuilder(connectionStringContext.DestinationConnectionString)
             {
                 // Change the Initial Catalog (Database) to 'master'
                 InitialCatalog = "master"
