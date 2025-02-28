@@ -2,5 +2,7 @@
 
 public interface IStoredProceduresRepository
 {
+    Task<string[]> GetStoredProceduresAsync();
     
+    Task SaveStoredProceduresAsync(string storedProcedureSql);
 }

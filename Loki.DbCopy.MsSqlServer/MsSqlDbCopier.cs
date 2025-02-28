@@ -34,11 +34,13 @@ public class MsSqlDbCopier(
             var createDatabaseCommand = msSqlDbCopyCommandFactory.CreateCreateDatabaseCommand();
             var copySchemasCommand = msSqlDbCopyCommandFactory.CreateCopySchemasCommand();
             var copyTablesCommand = msSqlDbCopyCommandFactory.CreateCopyTablesCommand();
+            var copyStoredProceduresCommand = msSqlDbCopyCommandFactory.CreateCopyStoredProceduresCommand();
         
             await dropDatabaseCommand.Execute();
             await createDatabaseCommand.Execute();
             await copySchemasCommand.Execute();
             await copyTablesCommand.Execute();
+            await copyStoredProceduresCommand.Execute();
 
         }
         catch (Exception e)

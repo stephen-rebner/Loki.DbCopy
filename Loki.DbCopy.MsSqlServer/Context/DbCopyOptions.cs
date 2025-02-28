@@ -15,7 +15,7 @@ public class DbCopyOptions
     // public bool CopyUsers { get; set; } = false;
     // public bool CopyRoles { get; set; } = false;
     // public bool CopyLogins { get; set; } = false;
-    public bool CopyTables { get; set; }
+    public bool CopyTables { get; set; } = true;
 
     // public bool CopyPermissions { get; set; } = false;
 
