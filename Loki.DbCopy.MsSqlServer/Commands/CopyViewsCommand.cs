@@ -1,11 +1,17 @@
 ﻿using Loki.DbCopy.MsSqlServer.Commands.Interfaces;
+using Loki.MsSqlDbCopy.Infrastructure.Repositories.Interfaces;
 
 namespace Loki.DbCopy.MsSqlServer.Commands;
 
-public class CopyViewsCommand : IDatabaseCopyCommand
+public class CopyViewsCommand(IViewsRepository viewsRepository) : IDatabaseCopyCommand
 {
-    public Task Execute()
+    public async Task Execute()
     {
-        throw new NotImplementedException();
+        var viewInfoCollection = await viewsRepository.GetViewsAsync();
+        
+        foreach (var viewInfo in viewInfoCollection)
+        {
+            await viewsRepository.SaveViewAsync(viewInfo);
+        }
     }
 }

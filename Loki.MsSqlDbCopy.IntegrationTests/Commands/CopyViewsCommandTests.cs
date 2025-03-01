@@ -8,11 +8,10 @@ using Microsoft.Extensions.DependencyInjection;
 
 namespace Loki.DbCopy.IntegrationTests.Commands;
 
-public class CopyStoredProceduresTests : BaseMsSqlDbCopierIntegrationTests
+public class CopyViewsCommandTests : BaseMsSqlDbCopierIntegrationTests
 {
-    // add an nunit test to check the stored procedures are copied
     [Test]
-    public async Task CopyStoredProceduresCommand_ShouldCopyAllStoredProcedures()
+    public async Task CopyViewsCommand_ShouldCopyAllViews()
     {
         // Arrange
         const string destinationDatabaseName = "NorthwindDBCopy";
@@ -23,7 +22,6 @@ public class CopyStoredProceduresTests : BaseMsSqlDbCopierIntegrationTests
             CopyStoredProcedures = true
         };
         
-        // use the SqlConnectionStringBuilder to build connection string
         var sourceConnectionStringBuilder = new SqlConnectionStringBuilder(SourceNorthWindDbContainer.GetConnectionString())
         {
             InitialCatalog = "Northwind"
@@ -43,22 +41,22 @@ public class CopyStoredProceduresTests : BaseMsSqlDbCopierIntegrationTests
         await using var sourceConnection = new SqlConnection(sourceConnectionStringBuilder.ToString());
         await using (var destinationConnection = new SqlConnection(destinationConnectionStringBuilder.ToString()))
         {
-            var getSourceTableColumnsSql = @"SELECT 
-                                                m.definition AS ProcedureDefinition
-                                            FROM 
-                                                sys.procedures p
-                                            JOIN 
-                                                sys.sql_modules m ON p.object_id = m.object_id
-                                            WHERE 
-                                                p.type = 'P'
-                                            ORDER BY 
-                                                p.name;";
+            var getSourceTableColumnsSql = @"SELECT
+                                            m.definition AS ViewDefinition
+                                        FROM
+                                            sys.objects o
+                                        JOIN
+                                            sys.sql_modules m ON o.object_id = m.object_id
+                                        WHERE
+                                            o.type = 'V'  -- Views
+                                        ORDER BY
+                                            o.name;";
             
-            var sourceSprocs = await sourceConnection.QueryAsync<string>(getSourceTableColumnsSql);
+            var sourceViews = await sourceConnection.QueryAsync<string>(getSourceTableColumnsSql);
 
-            var destinationSprocs = await destinationConnection.QueryAsync<string>(getSourceTableColumnsSql);
+            var destinationViews = await destinationConnection.QueryAsync<string>(getSourceTableColumnsSql);
             
-            destinationSprocs.Should().BeEquivalentTo(sourceSprocs);
+            destinationViews.Should().BeEquivalentTo(sourceViews);
         };
     }
     

@@ -45,6 +45,8 @@ public static class MsSqlServerIocContainer
         services.AddScoped<IMsSqlSchemasRepository, MsSqlSchemasRepository>();
 
         services.AddScoped<IStoredProceduresRepository, StoredProceduresRepository>();
+
+        services.AddScoped<IViewsRepository, ViewsRepository>();
         
         // Register the IMsSqlDbStructureCopier and MsSqlDbStructureCopier classes
         services.AddScoped<IMsSqlDbStructureCopier, MsSqlDbStructureCopier>();
