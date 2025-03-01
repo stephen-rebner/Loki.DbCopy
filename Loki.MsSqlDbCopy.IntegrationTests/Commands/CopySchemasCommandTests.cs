@@ -26,16 +26,7 @@ public class CopySchemasCommandTests : BaseMsSqlDbCopierIntegrationTests
         {
             DropAndRecreateDatabase = true,
             // Ensure that we create the schemas
-            CreateSchemas = true,
-            CopyData = false,
-            CopyStoredProcedures = false,
-            CopyFunctions = false,
-            CopyViews = false,
-            CopyTriggers = false,
-            CopyIndexes = false,
-            CopyPrimaryKeys = false,
-            CopyForeignKeys = false,
-            CopyTables = false
+            CreateSchemas = true
         };
 
         var sourceConnectionString = new SqlConnectionStringBuilder(SourceNorthWindDbContainer.GetConnectionString())

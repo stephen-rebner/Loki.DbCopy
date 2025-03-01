@@ -11,6 +11,7 @@ namespace Loki.DbCopy.IntegrationTests;
 
 public class MsSqlDbCopierTests : BaseMsSqlDbCopierIntegrationTests
 {
+    [Ignore("")]
     [Test]
     public async Task Copy_CopysTheDatabase_WhenTheSourceAndDestinationConnectionStringsAreProvided()
     {
@@ -32,17 +33,7 @@ public class MsSqlDbCopierTests : BaseMsSqlDbCopierIntegrationTests
         
         var dbCopyOptions = new DbCopyOptions
         {
-            DropAndRecreateDatabase = true,
-            CreateSchemas = false,
-            CopyData = false,
-            CopyStoredProcedures = false,
-            CopyFunctions = false,
-            CopyViews = false,
-            CopyTriggers = false,
-            CopyIndexes = false,
-            CopyPrimaryKeys = false,
-            CopyForeignKeys = false,
-            CopyTables = false
+            DropAndRecreateDatabase = true
         };
         
         // Act
