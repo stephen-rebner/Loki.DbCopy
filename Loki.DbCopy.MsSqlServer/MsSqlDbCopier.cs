@@ -36,6 +36,7 @@ public class MsSqlDbCopier(
             var copyTablesCommand = msSqlDbCopyCommandFactory.CreateCopyTablesCommand();
             var copyStoredProceduresCommand = msSqlDbCopyCommandFactory.CreateCopyStoredProceduresCommand();
             var copyViewsCommand = msSqlDbCopyCommandFactory.CreateCopyViewsCommand();
+            var copyFunctionsCommand = msSqlDbCopyCommandFactory.CreateCopyFunctionsCommand();
         
             await dropDatabaseCommand.Execute();
             await createDatabaseCommand.Execute();
@@ -43,6 +44,7 @@ public class MsSqlDbCopier(
             await copyTablesCommand.Execute();
             await copyStoredProceduresCommand.Execute();
             await copyViewsCommand.Execute();
+            await copyFunctionsCommand.Execute();
         }
         catch (Exception e)
         {

@@ -33,16 +33,18 @@ public class ViewsRepository(IConnectionStringContext connectionStringContext) :
                     ViewInfo
                     order by HasDependency desc;";
 
-        var sqlConnection = new SqlConnection(connectionStringContext.SourceConnectionString);
-        
-        var views = await sqlConnection.QueryAsync<string>(sql);
-        
-        return views.ToArray();
+        await using(var sqlConnection = new SqlConnection(connectionStringContext.SourceConnectionString))
+        {
+
+            var views = await sqlConnection.QueryAsync<string>(sql);
+
+            return views.ToArray();
+        }
     }
 
     public async Task SaveViewAsync(string viewSql)
     {
-        var sqlConnection = new SqlConnection(connectionStringContext.DestinationConnectionString);
+        await using var sqlConnection = new SqlConnection(connectionStringContext.DestinationConnectionString);
         
         await sqlConnection.ExecuteAsync(viewSql);
     }

@@ -11,8 +11,6 @@ public class MsSqlTablesRepository(IConnectionStringContext connectionStringCont
 {
     public async Task<TableInfo[]> GetTablesAsync()
     {
-        await using var sqlConnection = new SqlConnection(connectionStringContext.SourceConnectionString);
-
         var sql = @"
         SELECT
             SchemaName = s.name,
@@ -39,6 +37,8 @@ public class MsSqlTablesRepository(IConnectionStringContext connectionStringCont
 
         var tableDictionary = new Dictionary<string, TableInfo>();
 
+        await using var sqlConnection = new SqlConnection(connectionStringContext.SourceConnectionString);
+        
         var tables = await sqlConnection.QueryAsync<TableInfo, ColumnInfo, TableInfo>(
             sql,
             (table, column) =>

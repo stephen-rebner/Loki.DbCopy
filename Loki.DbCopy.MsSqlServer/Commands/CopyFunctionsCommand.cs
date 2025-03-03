@@ -1,11 +1,17 @@
 ﻿using Loki.DbCopy.MsSqlServer.Commands.Interfaces;
+using Loki.MsSqlDbCopy.Infrastructure.Repositories.Interfaces;
 
 namespace Loki.DbCopy.MsSqlServer.Commands;
 
-public class CopyFunctionsCommand : IDatabaseCopyCommand
+public class CopyFunctionsCommand(IFunctionsRepository functionsRepository) : IDatabaseCopyCommand
 {
-    public Task Execute()
+    public async Task Execute()
     {
-        throw new NotImplementedException();
+        var functions = await functionsRepository.GetFunctionsAsync();
+
+        foreach (var function in functions)
+        {
+            await functionsRepository.CreateFunctionAsync(function);
+        }
     }
 }
