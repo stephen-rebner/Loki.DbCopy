@@ -32,7 +32,7 @@ internal class MsSqlDbCopyCommandFactory(IEnumerable<IDatabaseCopyCommand?> data
 
     public IDatabaseCopyCommand CreateCopyDataCommand()
     {
-        throw new NotImplementedException();
+        return databaseCopyCommands.FirstOrDefault(databaseCopyCommand => databaseCopyCommand!.GetType() == typeof(CopyDataCommand))!;
     }
 
     public IDatabaseCopyCommand CreateCopyPrimaryKeysCommand()

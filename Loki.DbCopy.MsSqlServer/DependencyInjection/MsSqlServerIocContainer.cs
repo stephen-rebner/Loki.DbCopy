@@ -1,4 +1,5 @@
-﻿using Loki.DbCopy.MsSqlServer.Commands;
+﻿using Loki.BulkDataProcessor.DependancyInjection;
+using Loki.DbCopy.MsSqlServer.Commands;
 using Loki.DbCopy.MsSqlServer.Commands.Interfaces;
 using Loki.DbCopy.MsSqlServer.Context;
 using Loki.DbCopy.MsSqlServer.DatabaseCopyFunctions;
@@ -25,7 +26,7 @@ public static class MsSqlServerIocContainer
         services.AddScoped<IDatabaseCopyCommand, CreateDatabaseCommand>();
         services.AddScoped<IDatabaseCopyCommand, CopySchemasCommand>();
         services.AddScoped<IDatabaseCopyCommand, CopyTablesCommand>();
-        // services.AddScoped<IDatabaseCopyCommand, CopyDataCommand>();
+        services.AddScoped<IDatabaseCopyCommand, CopyDataCommand>();
         services.AddScoped<IDatabaseCopyCommand, CopyPrimaryKeysCommand>();
         services.AddScoped<IDatabaseCopyCommand, CopyForeignKeysCommand>();
         services.AddScoped<IDatabaseCopyCommand, CopyIndexesCommand>();
@@ -49,6 +50,8 @@ public static class MsSqlServerIocContainer
         services.AddScoped<IViewsRepository, ViewsRepository>();
         
         services.AddScoped<IFunctionsRepository, FunctionsRepository>();
+
+        services.AddScoped<IDataRepository, DataRepository>();
         
         // Register the IMsSqlDbStructureCopier and MsSqlDbStructureCopier classes
         services.AddScoped<IMsSqlDbStructureCopier, MsSqlDbStructureCopier>();
@@ -61,6 +64,8 @@ public static class MsSqlServerIocContainer
         
         // Register the MsSqlServerDatabaseCopier class
         services.AddScoped<IMsSqlDbCopier, MsSqlDbCopier>();
+        
+        services.AddLokiBulkDataProcessor(string.Empty);
 
         // Return the IServiceCollection
         return services;
